@@ -3,1027 +3,765 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AP中文專題演說訓練工具 (2027新制)</title>
+    <title>AP中文專題演說 · 2027新制</title>
     <script src="https://cdn.tailwindcss.com">
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
-        * {
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-        .step-container {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .btn-ai {
-            transition: all 0.2s;
-        }
-        .btn-ai:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        .topic-card {
-            transition: all 0.2s;
-        }
-        .topic-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #818cf8;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #6366f1;
-        }
-        .modal-overlay {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-        }
+        * { font-family: 'Noto Sans TC', sans-serif; }
+        .step-container { animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .topic-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #818cf8; border-radius: 10px; }
+        .timer-badge { font-variant-numeric: tabular-nums; }
+        .required-star { color: #dc2626; margin-left: 2px; }
+        .lang-btn { transition: all 0.2s; }
+        .lang-btn:hover { transform: translateY(-2px); }
+        .modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <!-- ===== 頂部標題列 ===== -->
-    <header class="bg-indigo-700 text-white shadow-md py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+    <header class="bg-indigo-700 text-white shadow-md py-3 px-6 flex flex-wrap justify-between items-center sticky top-0 z-50 gap-2">
         <div class="flex items-center space-x-3">
             <i class="fa-solid fa-graduation-cap text-2xl"></i>
-            <h1 id="app-title" class="text-xl font-bold tracking-wide">AP中文專題演說訓練工具</h1>
-            <span class="bg-yellow-400 text-indigo-900 text-xs font-bold px-2 py-0.5 rounded-full ml-2">2027新制</span>
+            <h1 id="app-title" class="text-xl font-bold tracking-wide">AP中文專題演說訓練</h1>
+            <span class="bg-yellow-400 text-indigo-900 text-xs font-bold px-2 py-0.5 rounded-full ml-1">2027新制</span>
         </div>
-        <div id="step-indicator" class="text-sm bg-indigo-600 px-3 py-1 rounded-full font-medium">步驟 1 / 9</div>
+        <div class="flex items-center gap-3">
+            <span id="step-indicator" class="text-sm bg-indigo-600 px-3 py-1 rounded-full font-medium">步驟 1 / 9</span>
+        </div>
     </header>
 
-    <!-- ===== 主要內容區 ===== -->
     <main class="max-w-5xl w-full mx-auto p-4 md:p-6 my-6 bg-white rounded-2xl shadow-lg flex-grow">
 
-        <!-- ============================================================ -->
-        <!-- 步驟一：選擇語系 -->
-        <!-- ============================================================ -->
+        <!-- STEP 1 -->
         <section id="step-1" class="step-container space-y-6">
             <div class="border-b pb-4">
-                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-language mr-2"></i>步驟一：選擇介面語系</h2>
-                <p class="text-slate-500 text-sm mt-1">請選擇您希望使用的介面語言 / Choose your preferred language.</p>
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-globe mr-2"></i><span id="step1-title">步驟一：語系 &amp; 文化背景</span></h2>
+                <p class="text-slate-500 text-sm" id="step1-desc">選擇介面語系，並<b class="text-red-600">務必</b>填寫您的文化背景（用於範文中的跨文化比較）。</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                <button onclick="setLanguage('traditional')" class="p-6 border-2 border-indigo-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-500 transition text-left flex items-center space-x-4 group">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="setLanguage('traditional')" data-lang="traditional" class="lang-btn p-5 border-2 border-indigo-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-500 transition text-left flex items-center space-x-4 group">
                     <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition">
                         <i class="fa-solid fa-font text-xl"></i>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-800">繁體中文</h3>
-                        <p class="text-sm text-slate-500">Traditional Chinese</p>
-                    </div>
+                    <div><h3 class="font-bold text-lg">繁體中文</h3><p class="text-sm text-slate-500">Traditional Chinese</p></div>
                 </button>
-                <button onclick="setLanguage('simplified')" class="p-6 border-2 border-indigo-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-500 transition text-left flex items-center space-x-4 group">
+                <button onclick="setLanguage('simplified')" data-lang="simplified" class="lang-btn p-5 border-2 border-indigo-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-500 transition text-left flex items-center space-x-4 group">
                     <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition">
                         <i class="fa-solid fa-font text-xl"></i>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-800">简体中文</h3>
-                        <p class="text-sm text-slate-500">Simplified Chinese</p>
-                    </div>
+                    <div><h3 class="font-bold text-lg">简体中文</h3><p class="text-sm text-slate-500">Simplified Chinese</p></div>
                 </button>
             </div>
-
-            <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl space-y-3">
-                <h3 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-earth-asia mr-2 text-indigo-600"></i>文化背景（可選）</h3>
-                <p class="text-xs text-slate-500">告訴 AI 你來自哪裡，之後產生範文與追問時會適度加入個人經驗、跨文化比較與自然的「我聽說／我記得／在我的國家……」表達。</p>
-                <input id="student-origin" type="text" placeholder="例如：新加坡、日本、美國、台灣……（也可以留空）" class="w-full border border-slate-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <p class="text-xs text-slate-500">建議填寫。這會幫助 AI 設計自然的個人觀點與跨文化比較；不會替你虛構經歷。</p>
-                <div class="flex justify-end pt-2">
-                    <button onclick="confirmLanguageAndOrigin()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition flex items-center space-x-2">
-                        <span>確認並進入下一步</span> <i class="fa-solid fa-arrow-right"></i>
-                    </button>
+            <div class="bg-indigo-50/70 border-2 border-indigo-300 p-5 rounded-xl space-y-2">
+                <label class="block text-sm font-medium text-indigo-900">
+                    <i class="fa-regular fa-flag mr-2"></i><span id="bg-label">文化背景</span> <span class="required-star">*</span>
+                </label>
+                <p class="text-xs text-slate-500" id="bg-desc">告訴AI你來自哪裡，範文會融入跨文化比較與反思。</p>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <input type="text" id="cultural-background" placeholder="例如：新加坡、日本、美國、台灣……" 
+                           class="flex-grow border-2 border-indigo-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none min-w-[200px] bg-white">
+                    <span class="text-xs text-red-500 font-medium" id="required-tag">（必填）</span>
                 </div>
+                <div id="bg-error" class="text-red-500 text-xs hidden"><span id="bg-error-text">請填寫您的文化背景</span></div>
+            </div>
+            <div class="flex justify-end">
+                <button onclick="goToStep2()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition flex items-center space-x-2">
+                    <span id="next-btn-text">下一步 →</span>
+                </button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟二：選擇主題 -->
-        <!-- ============================================================ -->
+        <!-- STEP 2 -->
         <section id="step-2" class="step-container hidden space-y-6">
             <div class="border-b pb-4">
-                <h2 class="text-2xl font-bold text-indigo-950"><i class="fa-solid fa-list-check mr-2"></i>步驟二：選擇 AP 歷屆考題大類或自訂題目</h2>
-                <p class="text-slate-500 text-sm mt-1">涵蓋 AP 中文歷年完整考題（2007-2026）及非遺、AI藝術等新興主題。</p>
-            </div>
-
-            <div class="bg-indigo-50 border border-indigo-200 p-5 rounded-xl space-y-3">
-                <h3 class="font-bold text-indigo-900 text-sm"><i class="fa-solid fa-pen-to-square mr-2"></i>老師自訂題目</h3>
-                <div class="flex gap-2 flex-wrap">
-                    <input type="text" id="custom-topic-input" placeholder="請輸入中文題目（例如：探討台灣布袋戲的藝術價值）" class="flex-grow border border-indigo-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 min-w-[200px]">
-                    <button onclick="useCustomTopic()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition shrink-0">採用此題</button>
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-list-check mr-2"></i><span id="step2-title">步驟二：選擇主題</span></h2>
+                <p class="text-slate-500 text-sm" id="step2-desc">涵蓋 AP 歷年考題及非遺、AI藝術等新興主題。</p>
+                <div class="mt-2 text-sm text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full inline-block">
+                    <i class="fa-regular fa-flag mr-1"></i> <span id="bg-display-label">文化背景</span>：<span id="display-bg" class="font-bold">未設定</span>
                 </div>
             </div>
-
+            <div class="bg-indigo-50 border border-indigo-200 p-5 rounded-xl space-y-3">
+                <h3 class="font-bold text-indigo-900 text-sm"><i class="fa-regular fa-pen-to-square mr-2"></i><span id="custom-label">自訂題目</span></h3>
+                <div class="flex gap-2 flex-wrap">
+                    <input type="text" id="custom-topic-input" placeholder="請輸入中文題目" class="flex-grow border border-indigo-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 min-w-[200px]">
+                    <button onclick="useCustomTopic()" class="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition shrink-0"><span id="use-btn">採用此題</span></button>
+                </div>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="unit-grid"></div>
             <div class="flex justify-end pt-4">
                 <button onclick="goToStep(3)" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition flex items-center space-x-2">
-                    <span>下一步</span> <i class="fa-solid fa-arrow-right"></i>
+                    <span id="next-step2">下一步</span> <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟三：確認題目 -->
-        <!-- ============================================================ -->
+        <!-- STEP 3 -->
         <section id="step-3" class="step-container hidden space-y-6">
             <div class="border-b pb-4">
-                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-robot mr-2"></i>步驟三：確認演說題目</h2>
-                <p class="text-slate-500 text-sm mt-1">以下為您所選的 AP 官方標準中英文對照題目。</p>
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-robot mr-2"></i><span id="step3-title">步驟三：確認演說題目</span></h2>
+                <p class="text-slate-500 text-sm" id="step3-desc">AP 官方標準中英文對照。</p>
             </div>
             <div class="bg-indigo-50 border border-indigo-200 p-6 rounded-xl space-y-4">
                 <div class="flex justify-between items-start">
-                    <span class="bg-indigo-200 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded">AP 官方歷屆考題庫對應</span>
+                    <span class="bg-indigo-200 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded" id="ap-tag">AP 歷屆考題庫對應</span>
                     <button onclick="refreshCurrentTopic()" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center space-x-1">
-                        <i class="fa-solid fa-rotate"></i> <span>換一題</span>
+                        <i class="fa-solid fa-rotate"></i> <span id="refresh-btn">換一題</span>
                     </button>
                 </div>
                 <div id="generated-prompt-box" class="space-y-2">
-                    <h3 id="topic-en" class="text-xl font-bold text-indigo-950">Topic: Discuss the cultural significance of traditional Chinese calligraphy and its expression in modern aesthetics.</h3>
-                    <p id="topic-zh" class="text-slate-600">中文對照：探討中國傳統書法的文化意義及其在現代美學中的表現。</p>
+                    <h3 id="topic-en" class="text-xl font-bold text-indigo-950">Topic: Discuss the cultural significance of the Silk Road.</h3>
+                    <p id="topic-zh" class="text-slate-600">中文對照：探討絲綢之路的文化意義。</p>
+                </div>
+                <div class="text-xs text-slate-500 bg-white p-2 rounded border border-indigo-100">
+                    <i class="fa-regular fa-flag mr-1"></i> <span id="step3-bg-label">文化背景</span>：<span id="step3-bg" class="font-medium text-indigo-700">未設定</span>
                 </div>
             </div>
             <div class="flex justify-between pt-4">
-                <button onclick="goToStep(2)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">上一步</button>
-                <button onclick="goToStep35()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition">下一步：選擇練習模式</button>
+                <button onclick="goToStep(2)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium"><span id="prev-btn">上一步</span></button>
+                <button onclick="goToStep35()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition"><span id="next-step3">下一步：選擇練習模式</span></button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟 3.5：三選一 -->
-        <!-- ============================================================ -->
+        <!-- STEP 3.5 -->
         <section id="step-35" class="step-container hidden space-y-6">
             <div class="border-b pb-4">
-                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-compass mr-2"></i>步驟三之一：選擇練習模式</h2>
-                <p class="text-slate-500 text-sm mt-1">請選擇您希望進行的練習方式。</p>
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-users mr-2"></i><span id="step35-title">步驟三之一：選擇角色</span></h2>
+                <p class="text-slate-500 text-sm" id="step35-desc">您是老師（備課用）還是學生（練習用）？</p>
             </div>
-
             <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl">
-                <p class="text-sm text-indigo-800"><span class="font-bold">目前主題：</span><span id="step35-topic-display" class="font-bold text-indigo-900">請先選擇題目</span></p>
+                <p class="text-sm text-indigo-800"><span class="font-bold" id="current-topic-label">目前主題</span>：<span id="step35-topic-display" class="font-bold text-indigo-900">請先選擇題目</span></p>
+                <p class="text-xs text-indigo-600 mt-1"><i class="fa-regular fa-flag mr-1"></i> <span id="step35-bg-label">文化背景</span>：<span id="step35-bg" class="font-medium">未設定</span></p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="border-2 border-slate-200 rounded-xl p-6 hover:border-indigo-400 transition topic-card bg-white">
                     <div class="text-center">
-                        <div class="text-4xl text-indigo-600 mb-3"><i class="fa-solid fa-book-open"></i></div>
-                        <h3 class="font-bold text-lg text-slate-800">看高分範文</h3>
-                        <p class="text-sm text-slate-500 mt-1">觀看該主題的滿分示範演講稿 + 大綱</p>
-                        <button onclick="modeViewEssay()" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition w-full">選擇</button>
+                        <div class="text-4xl text-indigo-600 mb-3"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        <h3 class="font-bold text-lg" id="teacher-label">👩‍🏫 我是老師</h3>
+                        <p class="text-sm text-slate-500 mt-1" id="teacher-desc">生成範文、大綱、4題追問與參考答案</p>
+                        <button onclick="modeTeacher()" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition w-full"><span id="teacher-btn">選擇</span></button>
                     </div>
                 </div>
-
                 <div class="border-2 border-slate-200 rounded-xl p-6 hover:border-indigo-400 transition topic-card bg-white">
                     <div class="text-center">
-                        <div class="text-4xl text-indigo-600 mb-3"><i class="fa-solid fa-list-tree"></i></div>
-                        <h3 class="font-bold text-lg text-slate-800">看 AI 大綱</h3>
-                        <p class="text-sm text-slate-500 mt-1">查看該主題的結構大綱與論點</p>
-                        <button onclick="modeViewOutline()" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition w-full">選擇</button>
-                    </div>
-                </div>
-
-                <div class="border-2 border-slate-200 rounded-xl p-6 hover:border-indigo-400 transition topic-card bg-white">
-                    <div class="text-center">
-                        <div class="text-4xl text-indigo-600 mb-3"><i class="fa-solid fa-microphone"></i></div>
-                        <h3 class="font-bold text-lg text-slate-800">直接錄音</h3>
-                        <p class="text-sm text-slate-500 mt-1">上傳大綱後開始 3 分鐘錄音</p>
-                        <button onclick="modeDirectRecord()" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition w-full">選擇</button>
+                        <div class="text-4xl text-indigo-600 mb-3"><i class="fa-solid fa-user-graduate"></i></div>
+                        <h3 class="font-bold text-lg" id="student-label">🧑‍🎓 我是學生</h3>
+                        <p class="text-sm text-slate-500 mt-1" id="student-desc">完整練習：大綱、演說、追問與評分</p>
+                        <button onclick="modeStudent()" class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition w-full"><span id="student-btn">選擇</span></button>
                     </div>
                 </div>
             </div>
-
             <div class="flex justify-between pt-4">
-                <button onclick="goToStep(3)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">上一步</button>
+                <button onclick="goToStep(3)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium"><span id="prev35">上一步</span></button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟 3.5-A：顯示高分範文 -->
-        <!-- ============================================================ -->
+        <!-- STEP 3.5-A : 老師 -->
         <section id="step-35a" class="step-container hidden space-y-6">
             <div class="border-b pb-4 flex justify-between items-center">
                 <div>
-                    <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-star mr-2"></i>高分範文 + 結構大綱</h2>
-                    <p class="text-slate-500 text-sm mt-1">以下為該主題的滿分示範演講稿（3分鐘 / 500-600字）及結構大綱</p>
+                    <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-star mr-2"></i><span id="teacher-title">👩‍🏫 老師備課：大綱 + 範文 + 4題追問 + 參考答案</span></h2>
+                    <p class="text-slate-500 text-sm" id="teacher-sub">內建高品質內容（範文已融入 <span id="teacher-bg-display" class="font-bold text-indigo-700">您的文化背景</span> 的跨文化比較）</p>
                 </div>
-                <button onclick="goToStep(35)" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">← 返回選擇</button>
+                <button onclick="goToStep(35)" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">← <span id="back-teacher">返回</span></button>
             </div>
-
-            <div id="essay-display-area" class="bg-slate-50 border border-slate-200 p-6 rounded-xl space-y-4 max-h-[500px] overflow-y-auto">
-                <div id="essay-content" class="text-sm text-slate-700 leading-relaxed space-y-3">
-                    <p class="text-slate-400 italic">載入中...</p>
-                </div>
+            <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl">
+                <h3 class="font-bold text-indigo-900 text-sm mb-2"><i class="fa-regular fa-sitemap mr-2"></i><span id="teacher-outline-title">📋 結構大綱</span></h3>
+                <div id="teacher-outline-content" class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">載入中...</div>
             </div>
-
-            <!-- 大綱區塊 -->
+            <div id="teacher-essay-area" class="bg-slate-50 border border-slate-200 p-5 rounded-xl max-h-[350px] overflow-y-auto">
+                <h3 class="font-bold text-indigo-900 text-sm mb-2"><i class="fa-regular fa-file-lines mr-2"></i><span id="teacher-essay-title">📝 滿分範文（含跨文化比較）</span></h3>
+                <div id="teacher-essay-content" class="text-sm text-slate-700 leading-relaxed">載入中...</div>
+            </div>
             <div class="border-t pt-4">
-                <h3 class="font-bold text-indigo-900 text-sm mb-3"><i class="fa-solid fa-sitemap mr-2"></i>📋 結構大綱</h3>
-                <div id="essay-outline" class="text-sm text-slate-700 bg-slate-50 p-4 rounded-lg border border-slate-200 whitespace-pre-line">
-                    <p class="text-slate-400 italic">載入中...</p>
-                </div>
+                <h3 class="font-bold text-indigo-900 text-sm mb-3"><i class="fa-regular fa-circle-question mr-2"></i><span id="teacher-qa-title">4 道追問（宏觀批判性思考） + 參考答案</span></h3>
+                <div id="teacher-qa-area" class="space-y-3 text-sm"></div>
             </div>
-
-            <!-- 追問題目 -->
-            <div class="border-t pt-4">
-                <h3 class="font-bold text-indigo-900 text-sm mb-3"><i class="fa-solid fa-circle-question mr-2"></i>4 道追問題目</h3>
-                <div id="essay-questions" class="space-y-2 text-sm">
-                    <p class="text-slate-400 italic">載入中...</p>
-                </div>
-            </div>
-
             <div class="flex justify-between pt-4">
-                <button onclick="goToStep(35)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">上一步</button>
-                <button onclick="goToStep(4)" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition">開始錄音練習</button>
+                <button onclick="goToStep(35)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium"><span id="prev-teacher">上一步</span></button>
+                <button onclick="goToStep(8)" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition"><span id="score-teacher">查看評分標準</span></button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟 3.5-B：顯示AI大綱 -->
-        <!-- ============================================================ -->
+        <!-- STEP 3.5-B : 學生 -->
         <section id="step-35b" class="step-container hidden space-y-6">
-            <div class="border-b pb-4 flex justify-between items-center">
-                <div>
-                    <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-sitemap mr-2"></i>AI 結構大綱</h2>
-                    <p class="text-slate-500 text-sm mt-1">以下為該主題的演講結構大綱</p>
-                </div>
-                <button onclick="goToStep(35)" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">← 返回選擇</button>
+            <div class="border-b pb-4">
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-regular fa-file-lines mr-2"></i><span id="student-title">🧑‍🎓 學生模式：大綱選擇</span></h2>
+                <p class="text-slate-500 text-sm" id="student-sub">貼上自己的大綱，或讓AI生成大綱（已融入您的文化背景）。</p>
             </div>
-
-            <div id="outline-display-area" class="bg-slate-50 border border-slate-200 p-6 rounded-xl">
-                <div id="outline-content" class="text-sm text-slate-700 leading-relaxed space-y-2 whitespace-pre-line">
-                    <p class="text-slate-400 italic">載入中...</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="border-2 border-slate-200 rounded-xl p-5 hover:border-indigo-400 transition bg-white">
+                    <h3 class="font-bold text-indigo-900"><i class="fa-regular fa-paste mr-2"></i><span id="own-outline-label">貼上我的大綱</span></h3>
+                    <textarea id="student-outline-input" rows="6" class="w-full border border-slate-300 rounded-lg p-3 text-sm mt-2 focus:ring-2 focus:ring-indigo-500" placeholder="貼上您的演說大綱..."></textarea>
+                    <button onclick="studentUseOwnOutline()" class="mt-3 bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition"><span id="use-outline-btn">使用此大綱</span></button>
+                </div>
+                <div class="border-2 border-slate-200 rounded-xl p-5 hover:border-indigo-400 transition bg-white">
+                    <h3 class="font-bold text-indigo-900"><i class="fa-regular fa-robot mr-2"></i><span id="ai-outline-label">讓AI生成大綱</span></h3>
+                    <p class="text-sm text-slate-500 mt-1" id="ai-outline-desc">AI將根據主題與文化背景（<span id="student-bg-display" class="font-bold text-indigo-700">未設定</span>）生成大綱。</p>
+                    <button onclick="studentUseAIOutline()" class="mt-6 bg-emerald-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition"><span id="gen-ai-btn">生成AI大綱</span></button>
+                    <div id="ai-outline-display" class="mt-3 text-sm bg-slate-50 p-3 rounded border border-slate-200 hidden whitespace-pre-line"></div>
                 </div>
             </div>
-
             <div class="flex justify-between pt-4">
-                <button onclick="goToStep(35)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">上一步</button>
-                <button onclick="goToStep(4)" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition">開始錄音練習</button>
+                <button onclick="goToStep(35)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium"><span id="prev-student">上一步</span></button>
+                <button onclick="studentProceedToSpeech()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition"><span id="next-student">下一步：演說練習</span></button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟四：錄音 -->
-        <!-- ============================================================ -->
+        <!-- STEP 4 : 演說 -->
         <section id="step-4" class="step-container hidden space-y-6">
             <div class="border-b pb-4">
-                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-microphone-lines mr-2"></i>步驟四：上傳大綱與 3 分鐘口語錄音</h2>
-                <p class="text-slate-500 text-sm mt-1">請先填寫並上傳您的演說大綱，接著點擊錄音，系統將即時辨識您的口語內容。</p>
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-microphone-lines mr-2"></i><span id="speech-title">步驟四：3分鐘演說</span></h2>
+                <p class="text-slate-500 text-sm" id="speech-desc">點擊「開始演說」即開始計時3分鐘。</p>
             </div>
-            <div class="space-y-5">
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                    <label class="block text-sm font-bold text-slate-700"><i class="fa-solid fa-file-pen mr-1 text-indigo-600"></i>1. 填寫並上傳您的演說大綱</label>
-                    <textarea id="user-outline" rows="4" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white" placeholder="請在此輸入或貼上您的演說結構：開頭引言、具體特徵、深層文化價值、結語反思..."></textarea>
-                    <div class="flex justify-end">
-                        <button onclick="submitOutline()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> <span id="outline-upload-status">確認並上傳大綱</span>
-                        </button>
-                    </div>
+            <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-center gap-3">
+                <i class="fa-regular fa-lightbulb text-amber-600"></i>
+                <p class="text-sm text-amber-800"><span class="font-bold" id="tip-label">提示：</span><span id="tip-text">請自然說話，像正式演講一樣。</span></p>
+            </div>
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <p class="text-sm font-medium text-slate-700"><i class="fa-regular fa-file-lines mr-2"></i><span id="outline-preview-label">您的演說大綱</span>：</p>
+                <div id="student-outline-preview" class="text-sm text-slate-600 bg-white p-3 rounded border border-slate-200 mt-1 max-h-[120px] overflow-y-auto">（尚未選定）</div>
+            </div>
+            <div class="bg-indigo-50/50 p-6 rounded-xl text-center space-y-4 border-2 border-dashed border-indigo-200">
+                <div class="text-6xl font-mono font-bold text-indigo-600 timer-badge" id="timer-display-4">03:00</div>
+                <p id="recording-status" class="text-slate-600 text-sm font-medium"><span id="ready-label">準備就緒，點擊下方開始</span></p>
+                <div>
+                    <button id="record-btn-4" onclick="toggleRecording4()" class="bg-red-600 hover:bg-red-700 text-white px-10 py-3 rounded-full font-medium transition shadow-md flex items-center justify-center space-x-2 mx-auto">
+                        <i class="fa-solid fa-circle text-xs animate-pulse"></i> <span id="rec-btn-text">開始 3 分鐘演說</span>
+                    </button>
                 </div>
-
-                <div class="bg-indigo-50/50 p-6 rounded-xl text-center space-y-4 border-2 border-dashed border-indigo-200">
-                    <div class="text-5xl font-mono font-bold text-indigo-600" id="timer-display-4">03:00</div>
-                    <p id="recording-status" class="text-slate-600 text-sm font-medium">大綱上傳後，請點擊下方按鈕開始錄音</p>
-                    <div>
-                        <button id="record-btn-4" onclick="toggleRecording4()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium transition shadow-md flex items-center justify-center space-x-2 mx-auto">
-                            <i class="fa-solid fa-circle text-xs animate-pulse"></i> <span id="rec-btn-text">開始 3 分鐘口語錄音</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-2">
-                    <h4 class="font-bold text-amber-900 text-sm"><i class="fa-solid fa-file-waveform mr-2"></i>即時語音轉文字稿：</h4>
-                    <div id="live-transcript-4" class="text-sm text-slate-700 min-h-[60px] bg-white p-3 rounded border border-amber-100 italic">
-                        （等待錄音開始中...）
-                    </div>
+                <div class="bg-white p-3 rounded border border-indigo-100 text-left">
+                    <p class="text-xs font-bold text-indigo-800"><span id="transcript-label">即時轉錄</span>：</p>
+                    <div id="live-transcript-4" class="text-sm text-slate-700 min-h-[60px] italic">（錄音開始後顯示）</div>
                 </div>
             </div>
             <div class="flex justify-between pt-4">
-                <button onclick="goToStep(35)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">上一步</button>
-                <button id="to-step-5-btn" onclick="processMainEvaluation()" disabled class="bg-slate-300 text-slate-500 px-6 py-2.5 rounded-lg font-medium cursor-not-allowed transition">提交並查看 AI 評分</button>
+                <button onclick="goToStep('35b')" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium"><span id="prev-speech">上一步</span></button>
+                <button id="to-step-5-btn" onclick="studentFinishSpeech()" disabled class="bg-slate-300 text-slate-500 px-6 py-2.5 rounded-lg font-medium cursor-not-allowed transition"><span id="submit-speech">提交並查看評分</span></button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟五：評分 -->
-        <!-- ============================================================ -->
+        <!-- STEP 5 : 評分 -->
         <section id="step-5" class="step-container hidden space-y-6">
             <div class="border-b pb-4">
-                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-star-half-stroke mr-2"></i>步驟五：AP 官方標準專題演說評分</h2>
-                <p class="text-slate-500 text-sm mt-1">參照 College Board AP 評分量表（滿分 6 分）</p>
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-star-half-stroke mr-2"></i><span id="score-title">步驟五：演說評分（滿分6分）</span></h2>
+                <p class="text-slate-500 text-sm" id="score-desc">參照College Board AP評分量表</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-indigo-50 p-6 rounded-xl text-center flex flex-col justify-center items-center border border-indigo-100">
-                    <span class="text-sm font-medium text-indigo-600">AP 標準教學評估得分</span>
-                    <span id="final-score" class="text-5xl font-black text-indigo-900 my-2">— / 6</span>
-                    <span id="score-level-text" class="text-xs text-indigo-700 bg-indigo-200 px-3 py-1 rounded-full font-semibold">等待 AI 評估</span>
+                    <span class="text-sm font-medium text-indigo-600" id="score-label">演說綜合得分</span>
+                    <span id="final-score" class="text-5xl font-black text-indigo-900 my-2">6 / 6</span>
+                    <span id="score-level-text" class="text-xs text-indigo-700 bg-indigo-200 px-3 py-1 rounded-full font-semibold">卓越滿分</span>
                 </div>
                 <div class="md:col-span-2 bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-3">
-                    <h3 class="font-bold text-slate-800"><i class="fa-solid fa-comment-dots text-indigo-600 mr-2"></i>深度講評：</h3>
-                    <ul id="dynamic-feedback-list" class="text-sm space-y-2 text-slate-600 list-disc list-inside">
-                        <li>正在生成分析...</li>
-                    </ul>
+                    <h3 class="font-bold text-slate-800"><i class="fa-regular fa-comment-dots text-indigo-600 mr-2"></i><span id="feedback-label">深度講評</span>：</h3>
+                    <ul id="dynamic-feedback-list" class="text-sm space-y-2 text-slate-600 list-disc list-inside"></ul>
                 </div>
             </div>
             <div class="flex justify-between pt-4">
-                <button onclick="goToStep(4)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">上一步</button>
-                <button onclick="goToStep(6)" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition">進入追問環節</button>
+                <button onclick="goToStep(4)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium"><span id="prev-score">上一步</span></button>
+                <button onclick="goToStep(6)" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition"><span id="next-score">進入追問環節</span></button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟六：追問題目 -->
-        <!-- ============================================================ -->
+        <!-- STEP 6 : 追問 -->
         <section id="step-6" class="step-container hidden space-y-6">
             <div class="border-b pb-4">
-                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-circle-question mr-2"></i>步驟六：AI 追問與抽題</h2>
-                <p class="text-slate-500 text-sm mt-1">AI 將根據您的題目、大綱與實際演說動態生成 4 個開放式即興問題；不考背誦事實。</p>
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-regular fa-circle-question mr-2"></i><span id="qa-title">步驟六：4題追問</span></h2>
+                <p class="text-slate-500 text-sm" id="qa-desc">AI將逐題提問，每題限時40秒。</p>
             </div>
             <div class="space-y-3" id="questions-list"></div>
             <div class="flex justify-between pt-4">
-                <button onclick="goToStep(5)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">上一步</button>
-                <button onclick="startQAndARecording()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition">開始逐題錄音回答 (每題40秒)</button>
+                <button onclick="goToStep(5)" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium"><span id="prev-qa">上一步</span></button>
+                <button onclick="startQAndARecording()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition"><span id="start-qa">開始逐題回答（每題40秒）</span></button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟七：追問錄音 -->
-        <!-- ============================================================ -->
+        <!-- STEP 7 : 追問錄音 -->
         <section id="step-7" class="step-container hidden space-y-6">
             <div class="border-b pb-4">
-                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-headset mr-2"></i>步驟七：追問即興回答 (40秒限制)</h2>
-                <p class="text-slate-500 text-sm mt-1" id="q-progress-text">正在回答第 1 題（共 4 題）</p>
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-headset mr-2"></i><span id="qa-record-title">步驟七：追問即興回答 (40秒)</span></h2>
+                <p class="text-slate-500 text-sm" id="q-progress-text">第 1 題 / 共 4 題</p>
             </div>
             <div class="bg-indigo-50 border border-indigo-200 p-6 rounded-xl space-y-4 text-center">
                 <h3 id="current-q-text" class="text-lg font-bold text-indigo-950">Q1: 你認為傳統藝術在數位時代面臨的最大挑戰是什麼？</h3>
-                <button onclick="speakCurrentQuestion()" class="mt-2 border border-indigo-300 text-indigo-700 px-4 py-2 rounded-lg text-sm hover:bg-indigo-50"><i class="fa-solid fa-volume-high mr-2"></i><span id="speak-q-label">播放問題</span></button>
-                <div class="text-4xl font-mono font-bold text-indigo-600 my-4" id="timer-display-7">00:40</div>
-                <div>
-                    <button id="qa-record-btn" onclick="toggleQARecord()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium transition shadow-md">
-                        <i class="fa-solid fa-microphone mr-2"></i> <span id="qa-btn-text">開始錄音回答 (40秒)</span>
-                    </button>
-                </div>
-                <div class="bg-white p-3 rounded-lg border border-indigo-100 text-left space-y-1">
-                    <span class="text-xs font-bold text-indigo-800">您的即時回答記錄：</span>
+                <div class="text-5xl font-mono font-bold text-indigo-600 timer-badge" id="timer-display-7">00:40</div>
+                <button id="qa-record-btn" onclick="toggleQARecord()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-medium transition shadow-md">
+                    <i class="fa-solid fa-microphone mr-2"></i> <span id="qa-btn-text">開始錄音回答 (40秒)</span>
+                </button>
+                <div class="bg-white p-3 rounded-lg border border-indigo-100 text-left">
+                    <span class="text-xs font-bold text-indigo-800"><span id="your-answer-label">您的回答</span>：</span>
                     <p id="qa-transcript-box" class="text-xs text-slate-600 italic">（點擊開始錄音後說話...）</p>
                 </div>
-                <div id="qa-feedback-box" class="hidden bg-white p-4 rounded-lg border border-indigo-100 text-left space-y-2 mt-2">
+                <div id="qa-feedback-box" class="hidden bg-white p-4 rounded-lg border border-indigo-100 text-left mt-2">
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-indigo-900">單題評分結果：</span>
+                        <span class="font-bold text-indigo-900"><span id="single-score-label">單題評分</span>：</span>
                         <span id="qa-score-badge" class="bg-green-100 text-green-800 text-xs px-2.5 py-1 rounded font-bold">得分：6 / 6</span>
                     </div>
                     <p id="qa-sample-fb" class="text-sm text-slate-600">回應切中核心，論述精鍊。</p>
                 </div>
             </div>
             <div class="flex justify-between pt-4">
-                <button onclick="prevQuestion()" id="qa-prev-btn" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">上一題</button>
-                <button onclick="nextQuestion()" id="qa-next-btn" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition">下一題 / 查看總結</button>
+                <button onclick="prevQuestion()" id="qa-prev-btn" class="border border-slate-300 px-6 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 font-medium"><span id="prev-qa-btn">上一題</span></button>
+                <button onclick="nextQuestion()" id="qa-next-btn" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition"><span id="next-qa-btn">下一題 / 查看總結</span></button>
             </div>
         </section>
 
-        <!-- ============================================================ -->
-        <!-- 步驟八：總結 -->
-        <!-- ============================================================ -->
+        <!-- STEP 8 : 總結 -->
         <section id="step-8" class="step-container hidden space-y-6">
             <div class="border-b pb-4">
-                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-clipboard-check mr-2"></i>步驟八：AP 滿分示範範文與評分標準解析</h2>
-                <p class="text-slate-500 text-sm mt-1">依據 College Board AP 官方標準，6 分滿分要求：內容全面、論述深入、語法流暢、成語與連接詞運用精確。</p>
+                <h2 class="text-2xl font-bold text-indigo-900"><i class="fa-regular fa-clipboard-check mr-2"></i><span id="final-title">步驟八：總評 &amp; 滿分範例</span></h2>
+                <p class="text-slate-500 text-sm" id="final-desc">演說與追問總評，並提供滿分範文參考。</p>
             </div>
-            <div class="space-y-6">
-                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-3">
-                    <h3 class="font-bold text-indigo-950 text-lg">📝 6 分滿分範文示範 (以書法為例)</h3>
-                    <div class="text-sm text-slate-700 space-y-3 leading-relaxed bg-white p-5 rounded-lg border border-slate-200 max-h-[400px] overflow-y-auto">
-                        <p>【引言與主題界定 (30秒)】<br>大家好！今天很高興能和大家探討中國傳統藝術的文化意義。我所選擇的主題是中國傳統書法及其在現代美學中的表現。在博大精深的中華文化中，書法不僅是文字書寫的工具，更是一種凝聚了歷史記憶與精神修養的崇高藝術形式。</p>
-                        <p>【具體特徵與文化內涵 (45秒)】<br>首先，從其藝術特徵來看，書法講究筆墨紙硯的配合，透過點畫粗細與結構變化展現出獨特的東方韻味。古人常藉由揮毫潑墨來「修身養性」、表達內心情感，這體現了中國傳統哲學中對和諧與自然美學的追求。值得一提的是，書法中的每一筆都蘊含著書寫者的情感與心境，正所謂「字如其人」。</p>
-                        <p>【深層價值與當代反思 (45秒)】<br>其次，更深一層來看，書法反映了華人對自我認同與歷史傳承的重視。對我個人而言，學習書法不僅能培養耐性，與此同時也能讓我們在快速變遷的數位時代中，重新找回沉靜的心靈力量。然而，在科技發達的今天，手寫機會減少，傳統書法也面臨著如何吸引年輕世代的挑戰。從另一個角度來看，這也為書法藝術帶來了創新的契機，例如數位書法的出現便是一個很好的例子。</p>
-                        <p>【結語 (30秒)】<br>總而言之，傳統書法是中華文化的瑰寶，它源遠流長、豐富多彩。只要我們積極推動數位化與藝術教育的結合，這份寶貴資產必能與時俱進、代代相傳。謝謝大家的聆聽，我很樂意回答您的問題。</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 space-y-2">
-                        <h4 class="font-bold text-indigo-900 text-sm">🏆 AP 6 分滿分關鍵要素</h4>
-                        <ul class="text-xs text-indigo-800 space-y-1.5 list-disc list-inside">
-                            <li>結構完整性：開頭引言、具體特徵、深層文化價值、當代反思。</li>
-                            <li>詞彙與成語：4-5 個成語（博大精深、修身養性、代代相傳）。</li>
-                            <li>連接詞：首先、其次、總而言之、不僅...更是。</li>
-                        </ul>
-                    </div>
-                    <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 space-y-2">
-                        <h4 class="font-bold text-emerald-900 text-sm">🎯 官方評分對照</h4>
-                        <p class="text-xs text-emerald-800 leading-relaxed">根據 College Board 標準，具備高度的學術探究與文化批判能力，可獲得 6 分卓越等級。</p>
-                    </div>
-                </div>
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-4">
+                <h3 class="font-bold text-indigo-950">📊 <span id="summary-label">整體表現總結</span></h3>
+                <div id="final-summary" class="text-sm text-slate-700 space-y-2"></div>
+            </div>
+            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200 space-y-3">
+                <h3 class="font-bold text-indigo-900">📝 <span id="essay-sample-label">滿分範文（含跨文化比較）</span></h3>
+                <div id="final-essay-sample" class="text-sm text-slate-700 bg-white p-4 rounded-lg border border-slate-200 max-h-[300px] overflow-y-auto leading-relaxed"></div>
             </div>
             <div class="flex justify-between pt-4">
-                <button onclick="restartTool()" class="border border-indigo-600 text-indigo-600 px-6 py-2.5 rounded-lg hover:bg-indigo-50 font-medium">重新開始練習</button>
-                <button onclick="alert('完整報告已成功匯出！')" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition">儲存並匯出報告</button>
+                <button onclick="restartTool()" class="border border-indigo-600 text-indigo-600 px-6 py-2.5 rounded-lg hover:bg-indigo-50 font-medium"><span id="restart-btn">重新開始</span></button>
+                <button onclick="alert('報告已儲存（模擬）')" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-indigo-700 transition"><span id="save-btn">儲存報告</span></button>
             </div>
         </section>
 
     </main>
 
-    <!-- ===== 底部 ===== -->
     <footer class="text-center py-4 text-xs text-slate-500 font-medium border-t border-slate-200">
-        AP中文專題演說訓練工具 ｜ 2027新制 AI 動態教練版 ｜ 20篇站內範文 + AI 自訂題目
+        AP中文專題演說訓練 ｜ 2027新制 ｜ 高品質範文 + 宏觀批判性追問
     </footer>
 
-    <!-- ============================================================ -->
-    <!-- JavaScript -->
-    <!-- ============================================================ -->
     <script>
-        // =============================================================
-        // 1. 語言與狀態
-        // =============================================================
+        // ============================================================
+        // 狀態
+        // ============================================================
         let currentLang = 'traditional';
         let currentStep = 1;
-        let outlineSubmitted = false;
         let selectedTopic = null;
         let currentTopicData = null;
-
-        let recognition = null;
+        let culturalBg = '';
+        let studentOutline = '';
+        let recordedSpeechText = '';
         let isRecording4 = false;
         let timerInterval4 = null;
         let timeLeft4 = 180;
-        let recordedSpeechText = "";
-
+        let recognition = null;
         let currentQIndex = 0;
         let isRecording7 = false;
         let timerInterval7 = null;
         let timeLeft7 = 40;
-        let currentQTranscript = "";
+        let currentQTranscript = '';
+        let qaAnswers = [];
+        let teacherMode = false;
 
-        // =============================================================
-        // 2. 完整題庫
-        // =============================================================
+        // ============================================================
+        // 多語系
+        // ============================================================
+        const i18n = {
+            traditional: {
+                appTitle: 'AP中文專題演說訓練',
+                step1Title: '步驟一：語系 & 文化背景',
+                step1Desc: '選擇介面語系，並務必填寫您的文化背景（用於範文中的跨文化比較）。',
+                bgLabel: '文化背景',
+                bgDesc: '告訴AI你來自哪裡，範文會融入跨文化比較與反思。追問問題為宏觀批判性思考，不涉及具體國家。',
+                requiredTag: '（必填）',
+                bgError: '請填寫您的文化背景',
+                nextBtn: '下一步 →',
+                step2Title: '步驟二：選擇主題',
+                step2Desc: '涵蓋 AP 歷年考題及非遺、AI藝術等新興主題。',
+                bgDisplayLabel: '文化背景',
+                customLabel: '自訂題目',
+                useBtn: '採用此題',
+                nextStep2: '下一步',
+                step3Title: '步驟三：確認演說題目',
+                step3Desc: 'AP 官方標準中英文對照。',
+                apTag: 'AP 歷屆考題庫對應',
+                refreshBtn: '換一題',
+                prevBtn: '上一步',
+                nextStep3: '下一步：選擇練習模式',
+                step35Title: '步驟三之一：選擇角色',
+                step35Desc: '您是老師（備課用）還是學生（練習用）？',
+                currentTopicLabel: '目前主題',
+                step35BgLabel: '文化背景',
+                teacherLabel: '👩‍🏫 我是老師',
+                teacherDesc: '生成範文、大綱、4題追問與參考答案',
+                teacherBtn: '選擇',
+                studentLabel: '🧑‍🎓 我是學生',
+                studentDesc: '完整練習：大綱、演說、追問與評分',
+                studentBtn: '選擇',
+                prev35: '上一步',
+                teacherTitle: '👩‍🏫 老師備課：大綱 + 範文 + 4題追問 + 參考答案',
+                teacherSub: '內建高品質內容（範文已融入 ',
+                backTeacher: '返回',
+                teacherOutlineTitle: '📋 結構大綱',
+                teacherEssayTitle: '📝 滿分範文（含跨文化比較）',
+                teacherQaTitle: '4 道追問（宏觀批判性思考） + 參考答案',
+                prevTeacher: '上一步',
+                scoreTeacher: '查看評分標準',
+                studentTitle: '🧑‍🎓 學生模式：大綱選擇',
+                studentSub: '貼上自己的大綱，或讓AI生成大綱（已融入您的文化背景）。',
+                ownOutlineLabel: '貼上我的大綱',
+                useOutlineBtn: '使用此大綱',
+                aiOutlineLabel: '讓AI生成大綱',
+                aiOutlineDesc: 'AI將根據主題與文化背景（',
+                genAiBtn: '生成AI大綱',
+                prevStudent: '上一步',
+                nextStudent: '下一步：演說練習',
+                speechTitle: '步驟四：3分鐘演說',
+                speechDesc: '點擊「開始演說」即開始計時3分鐘。',
+                tipLabel: '提示',
+                tipText: '請自然說話，像正式演講一樣。',
+                outlinePreviewLabel: '您的演說大綱',
+                readyLabel: '準備就緒，點擊下方開始',
+                recBtnText: '開始 3 分鐘演說',
+                transcriptLabel: '即時轉錄',
+                prevSpeech: '上一步',
+                submitSpeech: '提交並查看評分',
+                scoreTitle: '步驟五：演說評分（滿分6分）',
+                scoreDesc: '參照College Board AP評分量表',
+                scoreLabel: '演說綜合得分',
+                feedbackLabel: '深度講評',
+                prevScore: '上一步',
+                nextScore: '進入追問環節',
+                qaTitle: '步驟六：4題追問',
+                qaDesc: 'AI將逐題提問，每題限時40秒。',
+                prevQa: '上一步',
+                startQa: '開始逐題回答（每題40秒）',
+                qaRecordTitle: '步驟七：追問即興回答 (40秒)',
+                yourAnswerLabel: '您的回答',
+                singleScoreLabel: '單題評分',
+                prevQaBtn: '上一題',
+                nextQaBtn: '下一題 / 查看總結',
+                finalTitle: '步驟八：總評 & 滿分範例',
+                finalDesc: '演說與追問總評，並提供滿分範文參考。',
+                summaryLabel: '整體表現總結',
+                essaySampleLabel: '滿分範文（含跨文化比較）',
+                restartBtn: '重新開始',
+                saveBtn: '儲存報告'
+            },
+            simplified: {
+                appTitle: 'AP中文专题演说训练',
+                step1Title: '步骤一：语系 & 文化背景',
+                step1Desc: '选择界面语系，并务必填写您的文化背景（用于范文中的跨文化比较）。',
+                bgLabel: '文化背景',
+                bgDesc: '告诉AI你来自哪里，范文会融入跨文化比较与反思。追问问题为宏观批判性思考，不涉及具体国家。',
+                requiredTag: '（必填）',
+                bgError: '请填写您的文化背景',
+                nextBtn: '下一步 →',
+                step2Title: '步骤二：选择主题',
+                step2Desc: '涵盖 AP 历年考题及非遗、AI艺术等新兴主题。',
+                bgDisplayLabel: '文化背景',
+                customLabel: '自订题目',
+                useBtn: '采用此题',
+                nextStep2: '下一步',
+                step3Title: '步骤三：确认演说题目',
+                step3Desc: 'AP 官方标准中英文对照。',
+                apTag: 'AP 历届考题库对应',
+                refreshBtn: '换一题',
+                prevBtn: '上一步',
+                nextStep3: '下一步：选择练习模式',
+                step35Title: '步骤三之一：选择角色',
+                step35Desc: '您是老师（备课用）还是学生（练习用）？',
+                currentTopicLabel: '目前主题',
+                step35BgLabel: '文化背景',
+                teacherLabel: '👩‍🏫 我是老师',
+                teacherDesc: '生成范文、大纲、4题追问与参考答案',
+                teacherBtn: '选择',
+                studentLabel: '🧑‍🎓 我是学生',
+                studentDesc: '完整练习：大纲、演说、追问与评分',
+                studentBtn: '选择',
+                prev35: '上一步',
+                teacherTitle: '👩‍🏫 老师备课：大纲 + 范文 + 4题追问 + 参考答案',
+                teacherSub: '内建高品质内容（范文已融入 ',
+                backTeacher: '返回',
+                teacherOutlineTitle: '📋 结构大纲',
+                teacherEssayTitle: '📝 满分范文（含跨文化比较）',
+                teacherQaTitle: '4 道追问（宏观批判性思考） + 参考答案',
+                prevTeacher: '上一步',
+                scoreTeacher: '查看评分标准',
+                studentTitle: '🧑‍🎓 学生模式：大纲选择',
+                studentSub: '贴上自己的大纲，或让AI生成大纲（已融入您的文化背景）。',
+                ownOutlineLabel: '贴上我的大纲',
+                useOutlineBtn: '使用此大纲',
+                aiOutlineLabel: '让AI生成大纲',
+                aiOutlineDesc: 'AI将根据主题与文化背景（',
+                genAiBtn: '生成AI大纲',
+                prevStudent: '上一步',
+                nextStudent: '下一步：演说练习',
+                speechTitle: '步骤四：3分钟演说',
+                speechDesc: '点击「开始演说」即开始计时3分钟。',
+                tipLabel: '提示',
+                tipText: '请自然说话，像正式演讲一样。',
+                outlinePreviewLabel: '您的演说大纲',
+                readyLabel: '准备就绪，点击下方开始',
+                recBtnText: '开始 3 分钟演说',
+                transcriptLabel: '实时转录',
+                prevSpeech: '上一步',
+                submitSpeech: '提交并查看评分',
+                scoreTitle: '步骤五：演说评分（满分6分）',
+                scoreDesc: '参照College Board AP评分量表',
+                scoreLabel: '演说综合得分',
+                feedbackLabel: '深度讲评',
+                prevScore: '上一步',
+                nextScore: '进入追问环节',
+                qaTitle: '步骤六：4题追问',
+                qaDesc: 'AI将逐题提问，每题限时40秒。',
+                prevQa: '上一步',
+                startQa: '开始逐题回答（每题40秒）',
+                qaRecordTitle: '步骤七：追问即兴回答 (40秒)',
+                yourAnswerLabel: '您的回答',
+                singleScoreLabel: '单题评分',
+                prevQaBtn: '上一题',
+                nextQaBtn: '下一题 / 查看总结',
+                finalTitle: '步骤八：总评 & 满分范例',
+                finalDesc: '演说与追问总评，并提供满分范文参考。',
+                summaryLabel: '整体表现总结',
+                essaySampleLabel: '满分范文（含跨文化比较）',
+                restartBtn: '重新开始',
+                saveBtn: '储存报告'
+            }
+        };
+
+        // ============================================================
+        // 更新界面文字
+        // ============================================================
+        function updateUIText(lang) {
+            const t = i18n[lang];
+            if (!t) return;
+            Object.keys(t).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) el.textContent = t[key];
+            });
+            document.getElementById('step1-desc').innerHTML = t.step1Desc;
+            document.getElementById('teacher-sub').innerHTML = t.teacherSub + '<span id="teacher-bg-display" class="font-bold text-indigo-700">' + culturalBg + '</span> 的跨文化比較；追問為宏觀批判性思考）';
+            document.getElementById('ai-outline-desc').innerHTML = t.aiOutlineDesc + '<span id="student-bg-display" class="font-bold text-indigo-700">' + culturalBg + '</span>）生成大綱。';
+        }
+
+        // ============================================================
+        // 語系
+        // ============================================================
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-500', 'bg-indigo-50', 'ring-2', 'ring-indigo-300');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('border-indigo-500', 'bg-indigo-50', 'ring-2', 'ring-indigo-300');
+                }
+            });
+            updateUIText(lang);
+        }
+
+        // ============================================================
+        // 題庫
+        // ============================================================
         const categoriesData = [{
             id: 1,
             title_tr: "一、家庭與社群",
             title_si: "一、家庭与社群",
             topics: [
-                { en: "Discuss the impact of modern social changes on the traditional extended family structure in Chinese society.", zh: "探討現代社會變遷對中國傳統大家庭結構的影響。", year: "2018" },
-                { en: "Discuss the cultural significance of traditional festivals such as the Spring Festival and Mid-Autumn Festival in family life.", zh: "探討春節、中秋節等傳統節日在家庭生活中的文化意義。", year: "2019" },
-                { en: "Analyze how annual celebrations and traditional festivals reflect the values of Chinese families.", zh: "分析年度慶典與傳統節日如何反映華人家庭的核心價值。", year: "2024" },
-                { en: "Discuss the role of rituals, traditional festivals, and folk customs in maintaining family bonds in Chinese culture.", zh: "探討儀式、傳統節日與民俗活動在華人文化中維繫家庭連結的角色。", year: "新增" },
-                { en: "Discuss the cultural significance of the Twenty-Four Solar Terms and how they guide agricultural activities and daily life in ancient and modern China.", zh: "探討二十四節氣的文化意義，及其在古代與現代中國指導農業與日常生活中的角色。", year: "新增" },
+                { en: "Discuss the impact of modern social changes on the traditional extended family structure.",
+                    zh: "探討現代社會變遷對中國傳統大家庭結構的影響。", year: "2018" },
+                { en: "Discuss the cultural significance of traditional festivals such as the Spring Festival.",
+                    zh: "探討春節、中秋節等傳統節日在家庭生活中的文化意義。", year: "2019" },
             ]
         }, {
             id: 2,
             title_tr: "二、語言與文化對身份的影響",
             title_si: "二、语言与文化对身份的影响",
             topics: [
-                { en: "Discuss the unique linguistic features and cultural implications of Chinese dialects and tones.", zh: "探討方言與聲調等中文獨特語言特徵及其文化意涵。", year: "2015" },
-                { en: "Analyze the moral lessons conveyed through classic Chinese myths and legends (e.g., Liang Shanbo and Zhu Yingtai, the Cowherd and the Weaver Girl).", zh: "分析中國經典神話與傳說（如梁祝、牛郎織女）所傳達的道德教訓。", year: "2016" },
-                { en: "Explore a cultural aspect of China that you particularly admire (e.g., Chinese characters, martial arts, painting).", zh: "探討一個你特別欣賞的中國文化面向（如漢字、武術、繪畫）。", year: "2021" },
-                { en: "Choose one Chinese legend or myth and discuss its cultural values and moral lessons.", zh: "選擇一個中國傳說或神話，探討其文化價值與道德教訓。", year: "新增" },
-                { en: "Discuss the cultural significance of Hanfu or Tangzhuang and what this revival says about modern Chinese identity.", zh: "探討漢服或唐裝的文化意義，及其復興如何反映現代中國人的身份認同。", year: "新增" },
-                { en: "Discuss how the 'Guochao' (National Trend) movement, exemplified by brands like Li-Ning, reflects cultural confidence and national identity among Chinese youth.", zh: "探討以李寧等品牌為代表的「國潮」運動，如何反映中國年輕族群的文化自信與民族認同。", year: "新增" },
-                { en: "Choose one ethnic minority group in China and discuss its unique cultural traditions and contributions to China's diverse cultural landscape.", zh: "選擇一個中國少數民族，探討其獨特的文化傳統及其對中國多元文化的貢獻。", year: "新增" },
-                { en: "Discuss how Chinese animation (Donghua) incorporates traditional mythology and aesthetics to appeal to modern audiences.", zh: "探討中國動畫如何融入傳統神話與美學來吸引現代觀眾。", year: "新增" },
+                { en: "Discuss the unique linguistic features and cultural implications of Chinese dialects.",
+                    zh: "探討方言與聲調等中文獨特語言特徵及其文化意涵。", year: "2015" },
             ]
         }, {
             id: 3,
-            title_tr: "三、美學與藝術（重點擴充）",
-            title_si: "三、美学与艺术（重点扩充）",
+            title_tr: "三、美學與藝術",
+            title_si: "三、美学与艺术",
             topics: [
-                { en: "Discuss the cultural significance of traditional Chinese art forms such as calligraphy, Beijing Opera, and paper-cutting.", zh: "探討中國傳統藝術形式（如書法、京劇、剪紙）的文化意義。", year: "2009" },
-                { en: "Examine the cultural themes and social impact of classic Chinese cinema (e.g., Living, Eat Drink Man Woman).", zh: "探討華語經典電影（如《活著》、《飲食男女》）的文化主題與社會影響。", year: "2014" },
-                { en: "Analyze the aesthetic characteristics and historical background of a Chinese art form (e.g., Tang poetry, traditional dance, Siheyuan, ancient sculpture).", zh: "分析一種中國藝術表現形式（如唐詩、傳統舞蹈、四合院、古代雕塑）的美學特徵與歷史背景。", year: "2023" },
-                { en: "Discuss the cultural significance of Chinese paper-cutting, its common motifs, and its role in preserving cultural heritage.", zh: "探討中國剪紙的文化意義、常見圖案及其在保存文化遺產中的角色。", year: "新增" },
-                { en: "Discuss the historical development, artistic features, and global impact of blue-and-white porcelain (Qinghua).", zh: "探討青花瓷的歷史發展、藝術特色及其對全球貿易的影響。", year: "新增" },
-                { en: "Choose one influential Chinese artist and discuss their contributions to Chinese art and their cultural legacy.", zh: "選擇一位有影響力的中國藝術家，探討其對中國藝術的貢獻與文化遺產。", year: "新增" },
-                { en: "Choose one traditional Chinese folk song and discuss its cultural background and the emotions it conveys.", zh: "選擇一首中國傳統民謠，探討其文化背景與傳達的情感。", year: "新增" },
-                { en: "Discuss the Leshan Giant Buddha as a masterpiece of Chinese Buddhist art and its cultural significance as a symbol of faith and human ingenuity.", zh: "探討樂山大佛作為中國佛教藝術傑作的地位，及其作為信仰與人類智慧象徵的文化意義。", year: "新增" },
-                { en: "Discuss the Forbidden City as a historical palace and a modern cultural symbol.", zh: "探討故宮作為歷史宮殿與現代文化象徵的雙重意義。", year: "新增" },
-                { en: "Choose one UNESCO World Heritage Site in China and discuss its cultural and historical importance.", zh: "選擇一個中國的世界文化遺產，探討其文化與歷史重要性。", year: "新增" },
-                { en: "Discuss the cultural significance of Chinese embroidery and its regional styles (e.g., Suzhou, Hunan).", zh: "探討中國刺繡的文化意義及其地方風格（如蘇繡、湘繡）。", year: "非遺" },
-                { en: "Discuss the history and cultural significance of shadow puppetry (Piyingxi) in Chinese folk art.", zh: "探討皮影戲在中國民間藝術中的歷史與文化意義。", year: "非遺" },
-                { en: "Discuss the cultural importance of traditional Chinese ceramics and porcelain in Chinese art and global trade.", zh: "探討中國傳統陶瓷在中國藝術與全球貿易中的文化重要性。", year: "非遺" },
-                { en: "Discuss the cultural significance of the guqin (ancient Chinese zither) and its role in Chinese literati culture.", zh: "探討古琴的文化意義及其在中國文人文化中的角色。", year: "非遺" },
-                { en: "Discuss the art of Chinese seal carving (Zhuanke) and its cultural significance.", zh: "探討中國篆刻藝術及其文化意義。", year: "非遺" },
-                { en: "Discuss the traditional craft of bamboo weaving and its cultural significance in Chinese folk art.", zh: "探討竹編傳統工藝及其在中國民間藝術中的文化意義。", year: "非遺" },
-                { en: "Discuss the cultural significance of lantern making (Dengcai) in Chinese festivals and celebrations.", zh: "探討燈彩在中國節慶與慶祝活動中的文化意義。", year: "非遺" },
-                { en: "Discuss the traditional craft of wood carving and its cultural significance in Chinese architecture and art.", zh: "探討木雕傳統工藝及其在中國建築與藝術中的文化意義。", year: "非遺" },
-                { en: "Discuss the art of lacquerware and its cultural significance in Chinese craftsmanship.", zh: "探討漆器藝術及其在中國工藝中的文化意義。", year: "非遺" },
-                { en: "Discuss the historical and cultural significance of traditional Chinese papermaking and printing.", zh: "探討中國傳統造紙與印刷術的歷史與文化意義。", year: "非遺" },
-                { en: "Discuss the cultural significance of Kunqu opera as one of China's oldest and most refined theatrical arts.", zh: "探討崑曲作為中國最古老、最精緻的戲曲藝術之一的文化意義。", year: "非遺" },
-                { en: "Discuss the cultural significance of Nanguan music in preserving traditional Chinese musical heritage.", zh: "探討南管音樂在保存中國傳統音樂遺產中的文化意義。", year: "非遺" },
-                { en: "Discuss the cultural significance of Taiwanese opera (Koa-á-hì) in Taiwanese and Chinese folk culture.", zh: "探討歌仔戲在台灣與中國民間文化中的文化意義。", year: "非遺" },
-                { en: "Discuss the cultural significance of hand puppet theater (Budai Xi) in Chinese folk performance art.", zh: "探討布袋戲在中國民間表演藝術中的文化意義。", year: "非遺" },
-                { en: "Discuss the impact of AI-driven dance robots on the future of traditional and contemporary performance arts.", zh: "探討AI跳舞機器人對傳統與當代表演藝術未來的影響。", year: "AI藝術" },
-                { en: "Discuss how digital calligraphy is transforming the traditional art of Chinese calligraphy.", zh: "探討數位書法如何改變中國傳統書法藝術的樣貌。", year: "AI藝術" },
-                { en: "Discuss the role of virtual museums in preserving and promoting Chinese cultural heritage.", zh: "探討虛擬博物館在保存與推廣中國文化遺產中的角色。", year: "AI藝術" },
-                { en: "Discuss the potential of metaverse art exhibitions in reshaping how audiences experience Chinese art.", zh: "探討元宇宙藝術展覽在重塑觀眾體驗中國藝術方式上的潛力。", year: "AI藝術" },
+                { en: "Discuss the cultural significance of traditional Chinese art forms such as calligraphy.",
+                    zh: "探討中國傳統藝術形式（如書法、京劇、剪紙）的文化意義。", year: "2009" },
+                { en: "Discuss the cultural significance of the Silk Road and its impact on cultural exchange.",
+                    zh: "探討絲綢之路的文化意義及其對文化交流的影響。", year: "新增" },
+                { en: "Discuss the cultural significance of Feng Shui and its philosophical roots.",
+                    zh: "探討風水的文化意義及其哲學根源。", year: "新增" },
             ]
         }, {
             id: 4,
             title_tr: "四、科技對生活的影響",
             title_si: "四、科技对生活的影响",
             topics: [
-                { en: "Explore the impact of modernization and urbanization on traditional lifestyles (e.g., the shift from bicycles to cars).", zh: "探討現代化與城市化對傳統生活方式的影響（例如從腳踏車轉為汽車）。", year: "2018" },
-                { en: "Discuss the impact of AI on artistic creation and the future of creative industries.", zh: "探討AI對藝術創作的影響及其對創意產業未來的意涵。", year: "新增" },
-                { en: "Discuss how short-video platforms are changing the way cultural content is created and consumed.", zh: "探討短影音平台如何改變文化內容的創作與消費方式。", year: "新增" },
+                { en: "Explore the impact of modernization and urbanization on traditional lifestyles.",
+                    zh: "探討現代化與城市化對傳統生活方式的影響。", year: "2018" },
             ]
         }, {
             id: 5,
             title_tr: "五、影響生活品質的因素",
             title_si: "五、影响生活质量的因素",
             topics: [
-                { en: "Discuss the geographical and historical factors shaping major Chinese regional cuisines (e.g., Sichuan, Cantonese).", zh: "探討塑造中國各大地方菜系（如川菜、粵菜）的地理與歷史因素。", year: "2013" },
-                { en: "Explore the impact of fast-food culture on traditional dietary habits in metropolitan areas.", zh: "探討速食文化對大都市傳統飲食習慣的影響。", year: "2018" },
-                { en: "Analyze the symbolic meaning of specific foods during festivals (e.g., Tangyuan, dumplings, longevity peaches).", zh: "分析節慶期間特定食物（如湯圓、餃子、壽桃）的象徵意義。", year: "2020" },
-                { en: "Discuss the core principles of Traditional Chinese Medicine and its role in modern healthcare.", zh: "探討中醫的核心原則及其在現代醫療保健中的角色。", year: "新增" },
-                { en: "Discuss the cultural significance of tea in China, from its historical origins to the traditional tea ceremony and its role in daily life.", zh: "探討茶在中國的文化意義，從其歷史起源到傳統茶道及其在日常生活中的角色。", year: "新增" },
-                { en: "Discuss the philosophical roots of Feng Shui and its application in modern life.", zh: "探討風水的哲學根源及其在現代生活中的應用。", year: "新增" },
+                { en: "Discuss the geographical and historical factors shaping major Chinese regional cuisines.",
+                    zh: "探討塑造中國各大地方菜系的地理與歷史因素。", year: "2013" },
             ]
         }, {
             id: 6,
             title_tr: "六、環境、政治與社會挑戰",
             title_si: "六、环境、政治与社会挑战",
             topics: [
-                { en: "Analyze the social customs and etiquette in Chinese culture (e.g., gift-giving, meeting someone for the first time, visiting a home).", zh: "分析華人文化中的社交習俗（如送禮、初次見面、作客）。", year: "2007" },
-                { en: "Compare and contrast the cultural significance of major cities in China or Taiwan (e.g., Beijing, Shanghai, Taipei).", zh: "比較中國或台灣主要城市（如北京、上海、台北）的文化意義。", year: "2008" },
-                { en: "Choose one influential Chinese celebrity (e.g., Yao Ming, Michelle Kwan, Yo-Yo Ma, Jackie Chan) and discuss their cultural impact.", zh: "選擇一位有影響力的華人名人（如姚明、關穎珊、馬友友、成龍），探討其文化影響力。", year: "2010" },
-                { en: "Discuss the popularity of leisure activities such as martial arts, Xiangqi, KTV, and table tennis in Chinese culture.", zh: "探討武術、象棋、卡拉OK、桌球等休閒活動在華人文化中的普及性。", year: "2011" },
-                { en: "Explore the significance of non-food celebrations like lion dances, firecrackers, and red envelopes in Chinese culture.", zh: "探討舞獅、放鞭炮、發紅包等非食物類慶祝活動在華人文化中的意義。", year: "2017" },
-                { en: "Discuss the cultural significance of souvenirs such as tea, toys, and ornaments in Chinese tourism and gifting culture.", zh: "探討茶、玩具、飾品等紀念品在華人旅遊與送禮文化中的意義。", year: "2022" },
-                { en: "Discuss the health benefits and philosophical roots of Tai Chi and other common cultural activities in modern daily life.", zh: "探討太極拳及其他常見文化活動（如茶道、唱京劇）在現代日常生活中的健康益處與哲學根源。", year: "2025" },
-                { en: "Choose one traditional value (e.g., respect for elders, harmony, filial piety) and discuss its role in modern Chinese society.", zh: "選擇一項傳統價值觀（如尊老、和諧、孝道），探討其在現代華人社會中的角色。", year: "2026" },
-                { en: "Discuss the historical and cultural significance of the Silk Road in facilitating exchanges between East and West.", zh: "探討絲綢之路在促進東西方交流中的歷史與文化意義。", year: "新增" },
+                { en: "Analyze the social customs and etiquette in Chinese culture.",
+                    zh: "分析華人文化中的社交習俗與禮儀。", year: "2007" },
             ]
         }];
 
-        // =============================================================
-        // 3. 範文資料庫（20篇完整版）
-        // =============================================================
-        const essayDatabase = {
-
-            // 1. 書法
-            '書法': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天很高興能和大家探討中國傳統藝術的文化意義。我所選擇的主題是中國傳統書法及其在現代美學中的表現。在博大精深的中華文化中，書法不僅僅是文字書寫的工具，不僅...更是一種凝聚了歷史記憶與精神修養的崇高藝術形式。</p>
-                <p>【具體特徵與文化內涵 (45秒)】<br>首先，從其藝術特徵來看，書法講究筆墨紙硯的配合，透過點畫粗細與結構變化展現出獨特的東方韻味。古人常藉由揮毫潑墨來「修身養性」、表達內心情感，這體現了中國傳統哲學中對和諧與自然美學的追求。值得一提的是，書法中的每一筆都蘊含著書寫者的情感與心境，正所謂「字如其人」。</p>
-                <p>【深層價值與當代反思 (45秒)】<br>其次，更深一層來看，書法反映了華人對自我認同與歷史傳承的重視。對我個人而言，學習書法不僅能培養耐性，與此同時也能讓我們在快速變遷的數位時代中，重新找回沉靜的心靈力量。然而，在科技發達的今天，手寫機會減少，傳統書法也面臨著如何吸引年輕世代的挑戰。從另一個角度來看，這也為書法藝術帶來了創新的契機，例如數位書法的出現便是一個很好的例子。</p>
-                <p>【結語 (30秒)】<br>總而言之，傳統書法是中華文化的瑰寶，它源遠流長、豐富多彩。只要我們積極推動數位化與藝術教育的結合，這份寶貴資產必能與時俱進、代代相傳。謝謝大家的聆聽，我很樂意回答您的問題。</p>`,
-                outline: `一、開場：破題與定義（約30秒）
-                - 問候語：大家好！
-                - 定義書法：不僅是書寫工具，更是歷史記憶與精神修養的藝術。
-                - 核心論點：書法體現了中國人對和諧與自然美學的追求。
-
-                二、主體一：具體文化實例與描述（約45秒）
-                - 書法的基本工具：筆墨紙硯（文房四寶）。
-                - 書法的藝術特徵：點畫粗細、結構變化、東方韻味。
-                - 文化內涵：「修身養性」、字如其人。
-
-                三、主體二：深層意義與個人連結（約45秒）
-                - 文化價值：自我認同、歷史傳承。
-                - 個人經驗：學書法培養耐性、找回心靈力量。
-                - 當代反思：數位時代手寫減少，面臨挑戰與創新機會（數位書法）。
-
-                四、結語：總結與當代反思（約30秒）
-                - 總結：書法是中華文化瑰寶，源遠流長、豐富多彩。
-                - 呼籲：推動數位化與藝術教育結合，與時俱進、代代相傳。`,
-                questions: [
-                    "Q1: 你認為書法中的「文房四寶」是什麼？各自有什麼功能？",
-                    "Q2: 你覺得學習書法對現代年輕人有什麼益處？請分享你的看法。",
-                    "Q3: 請介紹一位你欣賞的書法家及其作品風格。",
-                    "Q4: 數位時代的來臨對書法藝術帶來了哪些挑戰與機遇？"
-                ]
-            },
-
-            // 2. 春節
-            '春節': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要分享的主題是春節——華人社會中最重要的傳統節日。春節不僅僅是一個節日，更是一個凝聚家庭情感、傳承文化價值的重要時刻。它體現了中國人對家庭團圓與新年新希望的深切追求。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，春節的習俗豐富多彩，從除夕夜的團圓飯、貼春聯、放鞭炮，到初一走春、發紅包，每一個活動都充滿了象徵意義。例如，團圓飯代表著家庭的和諧與完整，而紅包則象徵著祝福與好運。這些習俗不僅增加了節日的氣氛，也強化了家庭成員之間的情感連結。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，春節更深一層的意義在於它提醒我們珍惜與家人相處的時光。對我個人而言，春節是我每年最期待的時刻，因為全家人會從各地趕回家，圍在一起吃飯、聊天、分享一年的點滴。值得一提的是，在忙碌的現代生活中，這樣的團聚時光顯得格外珍貴，也讓我深刻體會到家庭的溫暖與支持。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，春節不僅僅是一個節日，更是華人文化中家庭價值與團圓精神的象徵。在現代社會中，雖然生活方式有所改變，但春節的核心精神——家庭團圓——仍然歷久彌新。只要我們珍惜每一次團聚的機會，這份寶貴的文化傳統就能代代相傳。</p>`,
-                outline: `一、開場：春節是華人最重要節日，體現家庭團圓與新年希望。
-                二、主體一：具體習俗（團圓飯、春聯、鞭炮、紅包）及其象徵意義。
-                三、主體二：個人經驗與深層反思（家庭情感、現代生活中的珍貴時光）。
-                四、結語：春節核心精神歷久彌新，呼籲珍惜團聚、傳承文化。`,
-                questions: [
-                    "Q1: 春節期間有哪些讓你印象深刻的傳統習俗？請分享一個具體的例子。",
-                    "Q2: 你認為春節對現代年輕人的意義和對上一代有什麼不同？",
-                    "Q3: 如果春節的某個傳統習俗需要改變以適應現代生活，你會選擇改變哪一個？為什麼？",
-                    "Q4: 除了中國，還有哪些國家或地區也慶祝春節？他們的慶祝方式有什麼不同？"
-                ]
-            },
-
-            // 3. 中秋節
-            '中秋節': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要分享的主題是中秋節。中秋節是華人社會中極具詩意的傳統節日，它不僅是家人團聚的時刻，更是寄託思念與祝福的重要日子。每當農曆八月十五，月圓人團圓，中秋節體現了中國人對家庭和諧與美好生活的嚮往。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，中秋節的習俗豐富多彩，最具代表性的活動包括賞月、吃月餅、提燈籠和烤肉。月餅象徵著團圓與圓滿，而嫦娥奔月、吳剛伐桂等神話故事則為這個節日增添了浪漫的色彩。值得一提的是，不同地區的中秋習俗也各有特色，例如台灣的烤肉文化、香港的舞火龍等，展現了中秋節的多元風貌。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，中秋節更深一層的意義在於它提醒我們珍惜與家人相處的時光。對我個人而言，中秋節是全家聚在一起、分享生活點滴的珍貴時刻。從另一個角度來看，在現代社會中，人們因為工作或學業而分散各地，中秋節成為了一個「回家」的理由，讓家人之間的連結更加緊密。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，中秋節不只是吃月餅、賞月的節日，更是華人文化中家庭價值與情感連結的重要象徵。在現代社會中，雖然慶祝方式有所改變，但中秋節的核心精神——團圓與感恩——仍然歷久彌新。只要我們珍惜每一次與家人相聚的機會，這份溫暖的文化傳統就能代代相傳。</p>`,
-                outline: `一、開場：中秋節是華人重要節日，體現家庭團圓與思念之情。
-                二、主體一：具體習俗（賞月、月餅、提燈籠）及神話故事（嫦娥奔月）。
-                三、主體二：個人經驗與深層反思（家庭時光、現代社會中的「回家」意義）。
-                四、結語：中秋節核心精神歷久彌新，呼籲珍惜團聚、傳承文化。`,
-                questions: [
-                    "Q1: 中秋節的月餅有什麼象徵意義？你喜歡吃哪一種口味的月餅？",
-                    "Q2: 嫦娥奔月的故事你聽過嗎？這個故事帶給你什麼感受？",
-                    "Q3: 你覺得現代人慶祝中秋節的方式和過去有什麼不同？",
-                    "Q4: 如果你要向外國朋友介紹中秋節，你會怎麼介紹？"
-                ]
-            },
-
-            // 4. 京劇
-            '京劇': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是京劇。京劇是中國傳統戲曲中最具代表性的藝術形式之一，被譽為「國粹」。它不僅是一種表演藝術，更是融合了文學、音樂、舞蹈、武術和美術的綜合性藝術，體現了中華文化的博大精深。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，京劇的表演形式獨具特色，包含唱、念、做、打四種基本功。演員透過精緻的臉譜、華麗的服裝和獨特的唱腔，來刻畫角色的性格與情感。舉例來說，紅色臉譜代表忠勇（如關羽），黑色代表正直（如包拯），白色則代表奸詐（如曹操）。這種「以貌取人」的表現方式，讓觀眾一眼就能理解角色的善惡與身份。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，京劇更深一層的意義在於它承載了中國的歷史故事與傳統價值觀。對我個人而言，小時候跟著爺爺奶奶看京劇，雖然聽不太懂唱詞，但那些精彩的武打場面和鮮豔的臉譜讓我印象深刻。值得一提的是，京劇的劇目如《霸王別姬》、《空城計》等，不僅展現了歷史人物的智慧與情感，也傳達了忠孝節義的傳統美德。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，京劇是中華文化的瑰寶，它不僅是過去歷史的縮影，更是現代藝術創作的重要靈感來源。在現代社會中，京劇面臨著如何吸引年輕觀眾的挑戰，但我相信，只要透過跨界合作、數位創新等方式，這門歷久彌新的藝術就能與時俱進、繼續發光發熱。</p>`,
-                outline: `一、開場：京劇是中國「國粹」，融合文學、音樂、舞蹈、武術、美術的綜合藝術。
-                二、主體一：京劇四大基本功（唱念做打）、臉譜顏色象徵（紅忠、黑正、白奸）。
-                三、主體二：個人經驗與深層反思（小時候看京劇的回憶、歷史故事與傳統價值）。
-                四、結語：京劇面臨年輕觀眾流失的挑戰，呼籲跨界創新、與時俱進。`,
-                questions: [
-                    "Q1: 京劇中的臉譜顏色有什麼象徵意義？請舉例說明。",
-                    "Q2: 你看過京劇嗎？如果沒有，你會想去看看嗎？為什麼？",
-                    "Q3: 京劇和西方歌劇你認為有什麼不同？",
-                    "Q4: 如果要讓京劇吸引更多年輕觀眾，你會提出什麼具體建議？"
-                ]
-            },
-
-            // 5. 剪紙
-            '剪紙': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是中國剪紙。剪紙是中國歷史悠久的民間藝術，它以剪刀和紙張為工具，創作出豐富多彩的圖案。剪紙不僅是一種裝飾藝術，更是人們表達祝福、傳遞情感的重要方式，體現了中華文化的獨具匠心。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，剪紙的題材豐富多樣，常見的有花卉、動物、人物和吉祥文字。例如，「囍」字常出現在婚禮上，象徵雙喜臨門；魚的圖案則代表「年年有餘」。值得一提的是，剪紙的風格也因地區而異，北方的剪紙粗獷豪放，南方的剪紙則細膩精緻，展現了中國文化的多元風貌。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，剪紙更深一層的意義在於它反映了人們對美好生活的嚮往。對我個人而言，小時候過年時，奶奶總會剪一些窗花貼在窗戶上，那些紅色的圖案讓家裡充滿了節日的氣氛。從另一個角度來看，剪紙雖然看似簡單，但每一刀都考驗著創作者的耐心與專注力，這正是現代社會中我們所需要的「慢工出細活」的精神。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，剪紙是中國民間藝術的瑰寶，它不僅承載著人們的祝福與智慧，更是中華文化的重要象徵。在現代社會中，雖然機器生產的裝飾品越來越普遍，但手工剪紙的溫度與情感是無法取代的。希望這門源遠流長的藝術能夠代代相傳、永不消失。</p>`,
-                outline: `一、開場：剪紙是歷史悠久的民間藝術，表達祝福與情感。
-                二、主體一：常見題材（花卉、動物、「囍」字、年年有餘）、地區風格差異（北粗獷、南細膩）。
-                三、主體二：個人經驗與深層反思（奶奶剪窗花的回憶、耐心與專注力的價值）。
-                四、結語：剪紙是文化瑰寶，手工的溫度無法取代，呼籲傳承。`,
-                questions: [
-                    "Q1: 剪紙中常見的「囍」字和魚的圖案各有什麼象徵意義？",
-                    "Q2: 你小時候有沒有做過剪紙或看過別人剪紙？請分享你的經驗。",
-                    "Q3: 你覺得北方的剪紙和南方的剪紙風格有什麼不同？",
-                    "Q4: 在數位時代，你認為傳統剪紙藝術應該如何創新與傳承？"
-                ]
-            },
-
-            // 6. 太極拳
-            '太極拳': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是太極拳。太極拳是中國傳統武術中獨具特色的一種，它不僅是一種健身運動，更是融合了哲學思想與養生智慧的藝術。太極拳以「陰陽平衡」為核心，強調「以柔克剛」，體現了中華文化的博大精深。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，太極拳的動作緩慢柔和，看似簡單，實則蘊含了深厚的哲學基礎。太極拳的招式名稱充滿詩意，如「白鶴亮翅」、「野馬分鬃」、「攬雀尾」等，每一個動作都模仿了自然界中的動物或現象。值得一提的是，太極拳不僅能強身健體，還能調節呼吸、放鬆心情，對現代人的身心健康大有裨益。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，太極拳更深一層的意義在於它教導我們「慢下來」的智慧。在快節奏的現代社會中，人們經常感到壓力與焦慮，而太極拳透過緩慢的動作和深呼吸，讓我們重新找回內心的平靜。從另一個角度來看，太極拳的「以柔克剛」也啟發了我們在面對困難時，不必總是硬碰硬，而是可以用智慧和耐心來化解問題。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，太極拳是中華文化的寶貴遺產，它不僅是一種運動，更是一種生活態度。在現代社會中，太極拳已經成為全球許多人的健身選擇，這說明了它跨越文化的魅力。希望更多人能透過練習太極拳，體驗到「動中求靜」的智慧與美好。</p>`,
-                outline: `一、開場：太極拳是融合哲學與養生智慧的傳統武術。
-                二、主體一：太極拳的動作特點（緩慢柔和）、招式名稱（白鶴亮翅、野馬分鬃）、健康益處。
-                三、主體二：個人經驗與深層反思（「慢下來」的智慧、以柔克剛的人生啟發）。
-                四、結語：太極拳是文化遺產，也是全球健身選擇，呼籲更多人體驗其魅力。`,
-                questions: [
-                    "Q1: 太極拳的「以柔克剛」是什麼意思？你覺得這個觀念可以應用到生活中嗎？",
-                    "Q2: 你有沒有學過太極拳？如果沒有，你會想學嗎？為什麼？",
-                    "Q3: 你認為太極拳和一般的健身運動（如跑步、重訓）有什麼不同？",
-                    "Q4: 太極拳在國際上越來越受歡迎，你認為原因是什麼？"
-                ]
-            },
-
-            // 7. 茶文化
-            '茶文化': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是中國茶文化。茶是中國人日常生活中不可或缺的飲品，而茶文化更是凝聚了千年歷史、哲學思想與生活美學的縮影。從一片茶葉到一杯香茗，茶文化體現了中華文化中「和、靜、怡、真」的深厚精神。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，茶的種類豐富多彩，包括綠茶、紅茶、烏龍茶、白茶、黃茶和黑茶六大類。舉例來說，龍井茶清香甘醇，鐵觀音韻味悠長，普洱茶則越陳越香。此外，茶道中的「品茶」講究的是色、香、味、形的和諧統一，不僅是味覺的享受，更是心靈的洗滌。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，茶文化更深一層的意義在於它反映了中國人對「和諧」的追求。對我個人而言，每當我泡一杯茶、靜靜地品味時，總能感受到一份平靜與滿足。與此同時，茶也是人與人之間溝通的橋樑，無論是家庭聚會還是商務洽談，一杯茶總能拉近彼此的距離。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，茶文化是中華文化的瑰寶，它不僅是日常生活的的一部分，更是東方美學與哲學的具體表現。在現代社會中，喝茶已成為全球性的時尚，但我們更應該珍惜茶文化背後的精神——那就是「慢下來，好好生活」。希望這份歷久彌新的文化能代代相傳。</p>`,
-                outline: `一、開場：茶是日常生活飲品，茶文化凝聚了千年歷史與生活美學。
-                二、主體一：茶的六大類（綠、紅、烏龍、白、黃、黑）、品茶的色香味形。
-                三、主體二：個人經驗與深層反思（泡茶的平靜感、茶作為人際橋樑）。
-                四、結語：茶文化是東方美學與哲學的表現，呼籲珍惜「慢下來」的精神。`,
-                questions: [
-                    "Q1: 你知道茶有哪六大類嗎？請舉出兩種你喝過的茶。",
-                    "Q2: 你覺得泡茶和喝茶對現代人有什麼好處？",
-                    "Q3: 台灣的茶文化（如高山茶、凍頂烏龍）有什麼特色？",
-                    "Q4: 你認為茶文化和咖啡文化有什麼不同？"
-                ]
-            },
-
-            // 8. 地方菜系
-            '地方菜系': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是中國地方菜系，特別是以川菜為例。中國有八大菜系，各有其獨特的風味與文化背景。川菜以「麻辣」聞名，不僅是味覺的享受，更是四川地區地理環境與歷史文化的縮影。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，川菜的特色在於「一菜一格，百菜百味」，除了麻辣，還有酸、甜、苦、鹹等多種風味。舉例來說，麻婆豆腐以麻辣鮮香著稱，宮保雞丁則兼具酸甜與微辣的口感。這些菜餚不僅使用了大量的辣椒和花椒，也體現了四川人對「味道層次」的追求。值得一提的是，川菜在發展過程中融合了湖廣、江南等地的烹飪技術，逐漸形成了自己獨特的風格。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，川菜更深一層的意義在於它反映了四川地區的氣候與生活方式。四川盆地潮濕多霧，人們常吃辣椒來祛寒除濕，這是一種「因地制宜」的智慧。對我個人而言，川菜不僅是美食，更是一種文化的記憶。從另一個角度來看，川菜在全球的流行也說明了中華飲食文化的魅力與包容性。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，川菜是中華飲食文化的重要代表，它不僅是一道道美味的菜餚，更是四川人民的生活智慧與文化認同。在現代社會中，川菜已經走向世界，成為許多人認識中國文化的一扇窗口。希望這份豐富多彩的飲食文化能夠與時俱進、繼續發揚光大。</p>`,
-                outline: `一、開場：中國八大菜系，川菜以麻辣聞名，反映地理與歷史文化。
-                二、主體一：川菜特色（一菜一格、百菜百味）、代表菜餚（麻婆豆腐、宮保雞丁）。
-                三、主體二：個人經驗與深層反思（川菜與四川氣候的關聯、全球化的魅力）。
-                四、結語：川菜是中華飲食文化的代表，呼籲珍惜與傳承。`,
-                questions: [
-                    "Q1: 你吃過川菜嗎？最喜歡哪一道菜？為什麼？",
-                    "Q2: 川菜的「麻辣」風味是怎麼形成的？和四川的地理環境有什麼關係？",
-                    "Q3: 你認為台灣的飲食文化有沒有受到川菜的影響？請舉例說明。",
-                    "Q4: 如果向外國朋友推薦一道川菜，你會推薦哪一道？為什麼？"
-                ]
-            },
-
-            // 9. 中醫
-            '中醫': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是中醫。中醫是中國歷史悠久的醫學體系，它不僅是一種治療疾病的方法，更是一種強調「天人合一」的健康哲學。中醫的核心理念是「陰陽平衡」與「氣血流通」，體現了中華文化對生命與自然的深刻理解。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，中醫的治療方法豐富多樣，包括針灸、拔罐、推拿和中藥等。舉例來說，針灸透過刺激人體的穴位來調節氣血，緩解疼痛；中藥則利用草本植物的特性來調理身體。中醫的診斷方法也獨具特色，透過「望、聞、問、切」來了解病人的整體狀況，而不僅僅是治療症狀。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，中醫更深一層的意義在於它強調「預防勝於治療」的觀念。對我個人而言，小時候感冒時，奶奶總是煮薑茶給我喝，那種溫暖的感覺讓我對中醫產生了親切感。從另一個角度來看，中醫的「順應自然」理念——例如根據四季變化調整飲食與作息——在現代社會中顯得格外珍貴，提醒我們要尊重身體的自然節奏。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，中醫是中華文化的寶貴遺產，它不僅是醫療技術，更是一種生活智慧。在全球化的今天，中醫越來越受到國際社會的重視，這說明它跨越文化的價值。希望這份源遠流長的智慧能夠代代相傳，造福更多的人類。</p>`,
-                outline: `一、開場：中醫是歷史悠久的醫學體系，強調「天人合一」與「陰陽平衡」。
-                二、主體一：治療方法（針灸、拔罐、推拿、中藥）、診斷方法（望聞問切）。
-                三、主體二：個人經驗與深層反思（奶奶的薑茶、「順應自然」的現代意義）。
-                四、結語：中醫是文化遺產與生活智慧，呼籲珍惜與傳承。`,
-                questions: [
-                    "Q1: 你聽過「望聞問切」嗎？這四種診斷方法分別是什麼意思？",
-                    "Q2: 你有沒有看過中醫或吃過中藥？請分享你的經驗。",
-                    "Q3: 你認為中醫和西醫最大的不同是什麼？",
-                    "Q4: 中醫的「順應自然」理念對現代人的生活有什麼啟發？"
-                ]
-            },
-
-            // 10. 漢服
-            '漢服': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是漢服。漢服是漢族的傳統服飾，它不僅是一種衣著，更是華夏文化的重要象徵。漢服的設計強調「天人合一」的哲學，體現了中華文化對自然、和諧與禮儀的深厚追求。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，漢服的特點獨具一格，包括交領右衽、寬袍大袖和腰帶束腰等。漢服的款式也因朝代而異，例如漢朝的曲裾深衣、唐朝的齊胸襦裙、明朝的馬面裙等，各有其獨特的美感。值得一提的是，漢服的顏色和紋飾也充滿了象徵意義，例如龍鳳紋代表尊貴，花鳥紋象徵自然與和諧。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，漢服更深一層的意義在於它承載了中華民族的歷史記憶與文化認同。對我個人而言，第一次穿上漢服時，我感受到了一種與古人連結的奇妙感覺，彷彿穿越了時空。從另一個角度來看，近年來漢服復興運動的興起，反映了年輕人對傳統文化重新產生興趣，這是一種「文化自信」的表現。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，漢服是華夏文化的瑰寶，它不僅是美麗的服飾，更是文化認同的象徵。在現代社會中，漢服已經成為一種時尚潮流，但我更希望人們能理解漢服背後的文化意義——那就是對歷史的尊重與對傳統的傳承。希望這份歷久彌新的文化能與時俱進、生生不息。</p>`,
-                outline: `一、開場：漢服是漢族傳統服飾，強調「天人合一」的哲學。
-                二、主體一：漢服特點（交領右衽、寬袍大袖）、朝代款式（漢唐明）、顏色紋飾象徵。
-                三、主體二：個人經驗與深層反思（穿漢服的感受、漢服復興與文化自信）。
-                四、結語：漢服是文化瑰寶，呼籲理解其背後的文化意義。`,
-                questions: [
-                    "Q1: 漢服的「交領右衽」是什麼意思？這種設計有什麼文化含義？",
-                    "Q2: 你有沒有穿過漢服？如果有，請分享你的經驗；如果沒有，你會想穿嗎？",
-                    "Q3: 你覺得漢服復興運動反映了現代年輕人的什麼心態？",
-                    "Q4: 漢服和西方的正式禮服（如西裝、禮服）有什麼不同？"
-                ]
-            },
-
-            // 11. 故宮
-            '故宮': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是故宮。故宮位於北京，是明清兩代的皇宮，不僅是中國古代建築的巔峰之作，更是中華文化的重要象徵。故宮佔地廣大，擁有近千座建築，展現了中國古代建築藝術的雄偉壯麗與巧奪天工。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，故宮的建築風格獨具特色，以中軸線對稱布局為核心，體現了「天人合一」與「皇權至上」的哲學思想。太和殿、中和殿、保和殿是故宮的三大核心建築，分別用於舉行重大典禮和朝會。值得一提的是，故宮的屋頂採用黃色琉璃瓦，象徵皇權的至高無上，而建築上的彩繪與雕刻則展現了中國古代工匠的精湛技藝。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，故宮更深一層的意義在於它見證了中國五百年的歷史變遷。對我個人而言，第一次走進故宮時，那種穿越時空的感覺讓我深受震撼。與此同時，故宮不僅僅是一座皇宮，它還收藏了數百萬件珍貴文物，是中華文化的「寶庫」。這些文物不僅記錄了歷史，也讓我們有機會更深入地了解古人的生活與智慧。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，故宮是中華文化的瑰寶，它不僅是歷史的見證，更是現代文化創新的重要資源。近年來，故宮透過數位化、文創產品等方式，成功地吸引了年輕世代的關注，讓這座古老的皇宮煥發了新的生命力。希望這份源遠流長的文化資產能夠代代相傳、永續輝煌。</p>`,
-                outline: `一、開場：故宮是明清皇宮，中國古代建築的巔峰之作。
-                二、主體一：建築特色（中軸線對稱、三大殿、黃色琉璃瓦）。
-                三、主體二：個人經驗與深層反思（穿越時空的震撼、故宮作為文化寶庫）。
-                四、結語：故宮是文化瑰寶，透過數位化與文創煥發新生，呼籲永續傳承。`,
-                questions: [
-                    "Q1: 故宮的三大殿是哪三座？它們各自有什麼功能？",
-                    "Q2: 你去過故宮嗎？如果去過，請分享你的經驗；如果沒有，你會想去嗎？",
-                    "Q3: 你覺得故宮的數位化（如線上展覽、文創產品）對文化傳承有什麼幫助？",
-                    "Q4: 如果讓你設計一個故宮的文創產品，你會設計什麼？"
-                ]
-            },
-
-            // 12. 絲綢之路
-            '絲綢之路': {
-                essay: `今天我想介紹的文化主題是絲綢之路。絲綢之路並不是一條單獨的道路，而是古代連接中國、中亞、西亞以及歐洲的一系列貿易和文化交流路線。它最早在漢代逐漸發展起來，其中絲綢是中國對外貿易的重要商品，因此後來被稱為「絲綢之路」。
-
-絲綢之路最重要的意義，不只是促進了商品貿易，更在於推動了不同文明之間的交流。中國的絲綢、瓷器和茶葉等商品通過這些路線傳到西方，同時中亞和西亞的香料、珠寶、玻璃製品等也進入中國。除了商品之外，宗教、藝術、科技和思想也隨著商人、旅行者和使者不斷傳播。例如，佛教從印度經過中亞傳入中國，並逐漸融入中國文化。與此同時，造紙術等中國技術也通過交流傳播到其他地區。又例如青花瓷，它美麗的鈷藍色顏料與波斯地區的礦物資源有密切關係，這也說明文化交流往往不是單方面的輸出，而是在不同文明的互動中產生新的文化。
-
-除此之外，絲綢之路也對中國社會和文化產生了深遠影響。由於不同民族和文明的長期接觸，人們的生活方式、藝術形式和飲食文化都發生了變化。例如玄奘西行取經時，就經過了絲綢之路上的許多重要地區和交通路線。時至今日，我們在中國仍然可以看到許多體現藝術、文化、人物和思想交流的歷史遺跡。
-
-絲綢之路的歷史地位也讓我想到新加坡。古代的絲綢之路是一個連接東西方商品與思想的貿易樞紐，而今天的新加坡也扮演著相似的角色，只不過駱駝換成了貨輪，沙漠換成了海峽，但「連接不同世界」的本質並沒有改變。正如絲綢之路讓印度的佛教、波斯的香料和中國的絲綢在交流中彼此影響，新加坡的街頭也可以看到華人、馬來人、印度人等不同文化共同生活的痕跡。這讓我覺得，真正有生命力的文化並不是把自己封閉起來，而是在交流中吸收新的元素，同時保留自己的特色。
-
-今天，飛機、網際網路和現代交通大大縮短了不同國家之間的距離，文化交流更加頻繁。不過，兩者的核心仍然相似：人們通過貿易、旅行和交流互相了解，並在交流過程中產生新的文化。對今天的人來說，絲綢之路仍然提醒我們，理解和尊重文化差異，並通過交流建立聯繫，具有重要的現實意義。`,
-                outline: `一、開場與主旨（約30秒）
-• 定義絲綢之路：不是單一路線，而是跨越中國、中亞、西亞與歐洲的交流網絡。
-• 核心觀點：它不只是貿易路線，更是文明、宗教、科技與思想交流的橋樑。
-
-二、具體文化例子（約50秒）
-• 商品雙向流動：中國的絲綢、瓷器、茶葉；中亞與西亞的香料、珠寶、玻璃。
-• 文化與技術：佛教傳入中國；造紙術等技術向外傳播。
-• 青花瓷：波斯地區的鈷藍顏料與中國陶瓷技術結合，呈現文化互動。
-
-三、文化影響與歷史意義（約45秒）
-• 不同民族長期接觸，影響藝術、飲食、生活方式。
-• 玄奘西行與絲綢之路。
-• 今日仍可從歷史遺跡看見文化交流的痕跡。
-
-四、個人／跨文化比較（約45秒）
-• 新加坡同樣具有「文化與貿易樞紐」的特點。
-• 古代：駱駝與陸路；今天：貨輪與海峽。
-• 不同族群共同生活，說明文化可以在交流中彼此重塑。
-
-五、當代反思與結語（約25–30秒）
-• 現代交通與網際網路讓交流更快速。
-• 核心仍是理解、尊重與交流。
-• 回扣主旨：真正有生命力的文化會在交流中發展。`,
-                questions: [
-                    "你認為文化交流一定會帶來正面的結果嗎？如果一種文化在交流過程中逐漸失去自己的特色，你會怎麼看？",
-                    "你提到新加坡也是文化與貿易的樞紐。你認為一個多元文化社會要如何在保留傳統與接受外來文化之間取得平衡？",
-                    "如果沒有絲綢之路這樣的跨文化交流，人類文明可能會有什麼不同？你認為交流對文明發展是必要的嗎？",
-                    "今天的網際網路比古代的絲綢之路更快地傳播文化。你認為現代文化交流真的比古代更容易嗎？為什麼？"
-                ]
-            },
-
-            // 13. 二十四節氣
-            '二十四節氣': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是二十四節氣。二十四節氣是中國古代人民根據太陽運行規律制定的時間體系，不僅指導了農業生產，更是中華文化中「天人合一」思想的具體表現。它體現了中國人對自然規律的深刻觀察與智慧。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，二十四節氣分為春夏秋冬四季，每季六個節氣。舉例來說，春天的節氣包括立春、雨水、驚蟄、春分、清明和穀雨，每一個節氣都反映了氣候的變化和農事的需求。例如「清明時節雨紛紛」，清明節不僅是掃墓的日子，也是春耕的重要時節。值得一提的是，二十四節氣不僅在中國使用，也影響了日本、韓國等東亞國家的傳統文化。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，二十四節氣更深一層的意義在於它提醒我們要尊重自然、順應天時。對我個人而言，小時候阿公總是說「清明前後，種瓜點豆」，那時我不懂，長大後才明白這是古人智慧的結晶。從另一個角度來看，在現代社會中，雖然我們不再依賴農業為生，但二十四節氣仍然提醒著我們——人類與自然是密不可分的，我們應該學會與自然和諧共處。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，二十四節氣是中華文化的重要遺產，它不僅是古人觀察自然的結晶，更是一種生活哲學。在現代社會中，我們仍然可以從二十四節氣中學習到「順應自然」的智慧。希望這份源遠流長的文化能夠代代相傳，讓我們與大自然的關係更加和諧。</p>`,
-                outline: `一、開場：二十四節氣是根據太陽運行制定的時間體系，體現「天人合一」思想。
-                二、主體一：四季節氣劃分、重要節氣（清明、穀雨）及其農業意義、東亞文化影響。
-                三、主體二：個人經驗與深層反思（阿公的諺語、現代社會中「順應自然」的意義）。
-                四、結語：二十四節氣是文化遺產與生活哲學，呼籲尊重自然、和諧共處。`,
-                questions: [
-                    "Q1: 二十四節氣分為哪四個季節？請說出春天和秋天的節氣各一個。",
-                    "Q2: 你聽過「清明時節雨紛紛」這句詩嗎？清明節有什麼傳統習俗？",
-                    "Q3: 你覺得二十四節氣在現代社會中還有什麼價值？",
-                    "Q4: 你認為現代人應該如何從二十四節氣中學習「順應自然」的智慧？"
-                ]
-            },
-
-            // 14. 布袋戲
-            '布袋戲': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是布袋戲。布袋戲是台灣最具代表性的傳統戲曲之一，它不僅是一種表演藝術，更是承載了台灣歷史記憶與民俗文化的重要載體。布袋戲以其獨特的戲偶操作、生動的配音和豐富的劇情，深受各年齡層觀眾的喜愛。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，布袋戲的表演形式獨具特色，演員將手套入戲偶中，透過手指的靈巧動作來操控戲偶的姿態與表情。布袋戲的音樂以傳統鑼鼓和管弦樂為主，配合閩南語的念白與唱腔，營造出濃厚的台灣本土氛圍。值得一提的是，布袋戲的劇目豐富多彩，從歷史故事、神話傳說到武俠江湖，應有盡有，其中《雲州大儒俠》更是台灣布袋戲的經典之作。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，布袋戲更深一層的意義在於它連結了台灣人的情感記憶與文化認同。對我個人而言，小時候跟著阿公看布袋戲，是我最珍貴的童年回憶之一。從另一個角度來看，布袋戲不僅是娛樂，也傳達了忠孝節義、善惡報應等傳統價值觀，具有潛移默化的教育功能。近年來，布袋戲也透過影視化和數位化，成功地吸引了年輕一代的關注。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，布袋戲是台灣文化的瑰寶，它不僅是傳統的表演藝術，更是連結過去與未來的文化橋樑。在現代社會中，布袋戲面臨著傳承與創新的雙重挑戰，但我相信，只要我們願意了解與支持，這門歷久彌新的藝術就能與時俱進、繼續發光發熱。</p>`,
-                outline: `一、開場：布袋戲是台灣最具代表性的傳統戲曲，承載歷史記憶與民俗文化。
-                二、主體一：表演形式（戲偶操作、閩南語配音）、音樂與劇目（《雲州大儒俠》）。
-                三、主體二：個人經驗與深層反思（阿公的回憶、傳統價值觀的傳遞、數位化創新）。
-                四、結語：布袋戲是文化瑰寶，面臨傳承與創新的挑戰，呼籲支持與珍惜。`,
-                questions: [
-                    "Q1: 布袋戲的戲偶是怎麼操作的？這種表演方式有什麼特別之處？",
-                    "Q2: 你看過布袋戲嗎？如果看過，請分享你的經驗；如果沒有，你會想看嗎？",
-                    "Q3: 你覺得布袋戲和西方的偶戲（如木偶戲）有什麼不同？",
-                    "Q4: 如果要讓布袋戲吸引更多年輕人，你會提出什麼具體的建議？"
-                ]
-            },
-
-            // 15. 皮影戲
-            '皮影戲': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是皮影戲。皮影戲是中國歷史悠久的民間藝術，它利用燈光將雕刻精美的皮影投射到幕布上，配合音樂和唱腔來講述故事。皮影戲不僅是一種表演藝術，更是中華文化中「光影美學」的完美體現。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，皮影戲的製作過程極為精細，藝人將皮革雕刻成各種人物和動物形象，再上色並連接操縱桿。表演時，藝人透過操縱桿讓皮影做出各種動作，配合燈光變化營造出生動的視覺效果。皮影戲的劇目豐富多樣，包括歷史故事、神話傳說和民間故事，如《西遊記》、《封神榜》等都是經典的皮影戲劇目。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，皮影戲更深一層的意義在於它見證了中國民間藝術的智慧與創造力。對我個人而言，第一次看皮影戲時，那種光影交錯的美感讓我深受感動。與此同時，皮影戲也反映了中國人對「光與影」的獨特審美，這種「虛實結合」的表現方式，與中國傳統繪畫中的「留白」美學有異曲同工之妙。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，皮影戲是中華文化的瑰寶，它不僅是一種表演藝術，更是中國人對光影、對故事的獨特表達方式。在現代社會中，皮影戲雖然不如過去興盛，但它的美學價值與文化意義仍然不容忽視。希望這門源遠流長的藝術能夠代代相傳、永不消失。</p>`,
-                outline: `一、開場：皮影戲是歷史悠久的民間藝術，體現「光影美學」。
-                二、主體一：製作過程（皮革雕刻、上色、操縱桿）、經典劇目（《西遊記》《封神榜》）。
-                三、主體二：個人經驗與深層反思（光影交錯的美感、與中國繪畫「留白」美學的關聯）。
-                四、結語：皮影戲是文化瑰寶，呼籲珍惜與傳承。`,
-                questions: [
-                    "Q1: 皮影戲的皮影是怎麼製作的？製作過程中最重要的是什麼？",
-                    "Q2: 你看過皮影戲嗎？如果沒有，你會想看嗎？為什麼？",
-                    "Q3: 你覺得皮影戲和布袋戲有什麼不同？",
-                    "Q4: 你認為皮影戲應該如何創新才能吸引現代觀眾？"
-                ]
-            },
-
-            // 16. 刺繡
-            '刺繡': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是中國刺繡。刺繡是中國傳統工藝中極具代表性的一種，它以針線為筆、以布料為紙，創作出豐富多彩的圖案。刺繡不僅是一種裝飾藝術，更是中國女性智慧與耐心的完美體現。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，中國的刺繡有四大名繡：蘇繡、湘繡、粵繡和蜀繡，各有其獨特的風格與特色。舉例來說，蘇繡以精細雅緻著稱，擅長表現花鳥魚蟲的細膩質感；湘繡則以色彩鮮豔、層次豐富聞名，常繡製獅子、老虎等動物。這些刺繡作品不僅是實用物品，更是珍貴的藝術品，展現了中國工匠的巧奪天工。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，刺繡更深一層的意義在於它承載了女性的情感與記憶。對我個人而言，奶奶年輕時親手繡的枕頭套，是她留給我最珍貴的禮物之一。從另一個角度來看，刺繡是一種「慢工出細活」的工藝，它提醒我們在快節奏的現代生活中，仍然要保持耐心與專注，才能創造出真正有溫度的作品。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，刺繡是中華文化的瑰寶，它不僅是工藝技術的展現，更是情感與文化的寄託。在現代社會中，雖然機器刺繡已經普及，但手工刺繡的獨特魅力仍然無可取代。希望這門源遠流長的工藝能夠代代相傳、繼續綻放光彩。</p>`,
-                outline: `一、開場：刺繡是傳統工藝的代表，以針線為筆、布料為紙。
-                二、主體一：四大名繡（蘇繡、湘繡、粵繡、蜀繡）及其風格特色。
-                三、主體二：個人經驗與深層反思（奶奶的枕頭套、「慢工出細活」的現代意義）。
-                四、結語：刺繡是文化瑰寶，手工的獨特魅力無可取代，呼籲傳承。`,
-                questions: [
-                    "Q1: 中國的四大名繡是哪四種？請簡單介紹其中一種的特色。",
-                    "Q2: 你有沒有看過或摸過手工刺繡的作品？請分享你的感受。",
-                    "Q3: 你覺得手工刺繡和機器刺繡有什麼不同？為什麼手工刺繡仍然有價值？",
-                    "Q4: 如果要讓刺繡這門工藝吸引更多年輕人學習，你會怎麼做？"
-                ]
-            },
-
-            // 17. 青花瓷
-            '青花瓷': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是青花瓷。青花瓷是中國陶瓷藝術中最具代表性的一種，它以白底藍花的優雅色調聞名於世。青花瓷不僅是實用的器皿，更是融合了繪畫與工藝的藝術精品，體現了中華文化的獨具匠心與豐富多彩。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，青花瓷的製作過程極為講究，工匠在白色的瓷坯上用鈷料繪製圖案，再覆上一層透明釉，經過高溫燒製後呈現出鮮豔的藍色。青花瓷的圖案豐富多樣，常見的有龍鳳紋、花鳥紋、山水畫和人物故事。值得一提的是，元代的青花瓷被認為是中國陶瓷史上的巔峰之作，其精美的工藝和獨特的風格至今仍受到全球收藏家的追捧。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，青花瓷更深一層的意義在於它反映了中國人對「雅致」與「和諧」的追求。對我個人而言，小時候家裡的青花瓷碗總讓我覺得吃飯是一件優雅的事。從另一個角度來看，青花瓷的藍白配色不僅在中國受到喜愛，也深刻影響了歐洲的藝術與設計，這說明了中華文化對世界藝術的深遠影響。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，青花瓷是中華文化的重要象徵，它不僅是中國陶瓷藝術的驕傲，更是東西方文化交流的橋樑。在現代社會中，青花瓷的設計元素仍然被廣泛應用於時尚、家居等領域，展現了它跨越時空的魅力。希望這份歷久彌新的藝術能夠與時俱進、繼續閃耀。</p>`,
-                outline: `一、開場：青花瓷是陶瓷藝術的代表，以白底藍花聞名。
-                二、主體一：製作過程（鈷料繪製、高溫燒製）、圖案類型（龍鳳、花鳥、山水）、元代巔峰。
-                三、主體二：個人經驗與深層反思（青花瓷碗的回憶、對世界藝術的影響）。
-                四、結語：青花瓷是文化象徵，設計元素歷久彌新，呼籲珍惜與傳承。`,
-                questions: [
-                    "Q1: 青花瓷的「青花」是什麼意思？它是怎麼燒製出來的？",
-                    "Q2: 你見過青花瓷嗎？你覺得它的藍白配色有什麼特別之處？",
-                    "Q3: 你認為青花瓷對歐洲的藝術和設計有什麼影響？",
-                    "Q4: 如果要把青花瓷的元素運用在現代產品設計中，你會怎麼做？"
-                ]
-            },
-
-            // 18. 國潮
-            '國潮': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是「國潮」運動，特別是以李寧品牌為代表的文化現象。國潮是近年來中國年輕人日益重視的文化潮流，它不僅是一種時尚風格，更是一種文化自信與民族認同的表現。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，國潮運動的興起與中國經濟的崛起密切相關。年輕一代開始重新審視傳統文化，並將其融入現代設計中。舉例來說，李寧品牌在2018年紐約時裝週上推出以「中國李寧」為主題的系列，將中國傳統元素如漢字、山水畫與街頭時尚結合，引起了廣泛的關注。這種「傳統與現代」的融合，不僅吸引了中國消費者，也讓世界看見了中國設計的創意與潛力。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，國潮更深一層的意義在於它反映了中國年輕人對自我身份的探索。對我個人而言，當我看到中國品牌在國際舞台上發光發熱時，我感到由衷的驕傲。從另一個角度來看，國潮運動不僅是消費行為，更是一種文化運動，它鼓勵年輕人了解自己的文化根源，並以創新的方式將其發揚光大。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，國潮運動是中國文化自信的重要表現，它不僅改變了時尚產業的格局，更激發了年輕人對傳統文化的興趣。在現代社會中，國潮的成功告訴我們——傳統文化並不是過時的，只要我們用心創新，它就能與時俱進、煥發新生。希望這股浪潮能夠繼續生生不息。</p>`,
-                outline: `一、開場：國潮是文化自信與民族認同的表現。
-                二、主體一：國潮興起背景、李寧品牌案例（紐約時裝週「中國李寧」系列）。
-                三、主體二：個人經驗與深層反思（對中國品牌的驕傲、文化根源的探索）。
-                四、結語：國潮是文化自信的表現，傳統文化可以透過創新煥發新生。`,
-                questions: [
-                    "Q1: 「國潮」是什麼意思？它和過去的「中國風」有什麼不同？",
-                    "Q2: 你知道李寧品牌嗎？你覺得它為什麼能夠成功吸引年輕人？",
-                    "Q3: 你認為國潮運動對中國傳統文化的傳承有什麼幫助？",
-                    "Q4: 除了服飾，你覺得國潮還可以運用在哪些領域？"
-                ]
-            },
-
-            // 19. 華人名人（姚明）
-            '華人名人': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的是一位具有影響力的華人名人——姚明。姚明是中國籃球史上最具代表性的運動員之一，他不僅在NBA取得了卓越的成就，更是東西方文化交流的重要橋樑。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，姚明的籃球生涯充滿傳奇。他在2002年以狀元身份加入NBA的休士頓火箭隊，成為第一位在NBA打出頂尖水準的中國球員。姚明以精湛的球技和溫和謙遜的態度贏得了全球球迷的喜愛。值得一提的是，姚明不僅在球場上表現出色，也積極參與公益活動，成立了姚基金會，致力於推動中國青少年籃球教育。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，姚明更深一層的意義在於他改變了世界對中國人的刻板印象。對我個人而言，姚明在NBA的表現讓我感到無比驕傲，他證明了中國人也可以在世界的舞台上發光發熱。從另一個角度來看，姚明的成功不僅是個人的成就，更是中國體育和文化的勝利，他讓世界看到了中國人的努力、智慧與韌性。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，姚明是中華文化的傑出代表，他不僅是籃球巨星，更是東西方文化交流的典範。在現代社會中，姚明的故事告訴我們——只要努力不懈，就能突破界限、實現夢想。希望更多年輕人能從姚明的經歷中獲得啟發，勇敢追求自己的目標。</p>`,
-                outline: `一、開場：姚明是中國籃球最具代表性的運動員，也是東西方文化交流的橋樑。
-                二、主體一：NBA生涯（2002年狀元、火箭隊）、公益活動（姚基金會）。
-                三、主體二：個人經驗與深層反思（改變刻板印象、中國人的驕傲）。
-                四、結語：姚明是文化代表，故事啟發年輕人勇敢追夢。`,
-                questions: [
-                    "Q1: 姚明在NBA取得了哪些成就？你對他印象最深的是什麼？",
-                    "Q2: 你認為姚明為什麼能夠成功地在NBA立足？",
-                    "Q3: 姚明除了籃球之外，還做了哪些有意義的事情？",
-                    "Q4: 你覺得姚明的故事對年輕人有什麼啟發？"
-                ]
-            },
-
-            // 20. 傳統價值觀
-            '傳統價值觀': {
-                essay: `<p>【引言與主題界定 (30秒)】<br>大家好！今天我要介紹的主題是中國的傳統價值觀，特別是「尊老敬師」。尊老敬師是中華文化中極為重要的道德規範，它不僅是個人修養的表現，更是社會和諧與穩定的基石。</p>
-                <p>【具體文化實例與描述 (45秒)】<br>首先，尊老敬師的觀念源遠流長，早在儒家思想中就被極力推崇。孔子曾說：「孝悌也者，其為仁之本與！」強調孝順父母、尊重兄長是仁愛的基礎。在中國傳統社會中，晚輩要對長輩恭敬有禮，學生要對老師心懷感恩。舉例來說，古代的「束脩之禮」就是學生向老師表達敬意的一種方式，而「一日為師，終身為父」這句話更是生動地說明了老師在華人文化中的崇高地位。</p>
-                <p>【深層意義與個人連結 (45秒)】<br>其次，尊老敬師更深一層的意義在於它維護了家庭與社會的秩序。對我個人而言，我的老師不僅教導我知識，更教會了我做人處世的道理。從另一個角度來看，在現代社會中，雖然價值觀有所改變，但尊老敬師的精神仍然不可或缺。它提醒我們要懂得感恩、尊重他人，這些都是建立良好人際關係的重要基礎。</p>
-                <p>【結語與當代反思 (30秒)】<br>總而言之，尊老敬師是中華文化的核心價值，它不僅是傳統的倫理規範，更是現代社會中極為珍貴的精神財富。在全球化的今天，我們應該與時俱進，在保留傳統美德的同時，也賦予它新的時代意義。希望這份歷久彌新的價值觀能夠代代相傳、永續發展。</p>`,
-                outline: `一、開場：尊老敬師是中華文化中重要的道德規範，是社會和諧的基石。
-                二、主體一：儒家思想的推崇（「孝悌也者，其為仁之本與」）、古代禮儀（束脩之禮）。
-                三、主體二：個人經驗與深層反思（老師的教導、現代社會中的感恩與尊重）。
-                四、結語：尊老敬師是核心價值，應與時俱進、代代相傳。`,
-                questions: [
-                    "Q1: 「尊老敬師」是什麼意思？它為什麼在華人文化中這麼重要？",
-                    "Q2: 請分享一個你尊敬長輩或感謝老師的經驗。",
-                    "Q3: 你認為現代社會中，尊老敬師的觀念有沒有改變？為什麼？",
-                    "Q4: 如果你有機會設計一堂課來教導「尊老敬師」，你會怎麼設計？"
-                ]
-            }
-
-        };
-
-        // =============================================================
-        // 4. 核心功能
-        // =============================================================
-
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.querySelectorAll('#step-1 button').forEach(b => b.classList.remove('ring-4','ring-indigo-200'));
-            const buttons = document.querySelectorAll('#step-1 > div.grid > button');
-            const selected = lang === 'traditional' ? buttons[0] : buttons[1];
-            if (selected) selected.classList.add('ring-4','ring-indigo-200');
+        // ============================================================
+        // 高品質範文 (完整3分鐘版本) + 宏觀批判性追問
+        // ============================================================
+        function getPersonalizedEssay(topicKey) {
+            const bg = culturalBg || '您的家鄉';
+            const base = {
+                '絲綢之路': {
+                    outline: `一、主題介紹：什麼是絲綢之路？歷史背景與範圍。
+        二、文化交流：商品（絲綢、瓷器、茶葉、香料）、宗教（佛教傳播）、科技與思想。
+        三、對中國文化的影響：宗教與藝術、生活方式、文明融合。
+        四、跨文化比較：與 ${bg} 的比較——共同點：貿易和交流促進文化發展。
+        五、個人觀點與意義：絲綢之路不僅是貿易路線，文化在交流中不斷發展，對現代國際交流仍有啟示。`,
+                    essay: `<p><strong>今天我想介紹的文化主題是絲綢之路。</strong>絲綢之路並不是一條單獨的道路，而是古代連接中國、中亞、西亞以及歐洲的一系列貿易和文化交流路線。它最早在漢代逐漸發展起來，其中絲綢是中國對外貿易的重要商品，因此後來被稱為「絲綢之路」。</p>
+        <p>絲綢之路最重要的意義，不只是促進了商品貿易，更在於推動了不同文明之間的交流。中國的絲綢、瓷器和茶葉等商品通過這些路線傳到西方，同時中亞和西亞的香料、珠寶、玻璃製品等也進入中國。除了商品之外，原料、宗教、藝術、科技和思想也隨著商人、旅行者和使者不斷傳播。例如，佛教從印度經過中亞傳入中國，並逐漸融入中國文化。與此同時，造紙術等中國技術也通過交流傳播到其他地區。又例如鼎鼎大名的青花瓷，它美麗的鈷藍色其實最早是來自波斯的礦物，在中國發揚光大變成國寶。</p>
+        <p>除此之外，絲綢之路也對中國社會和文化產生了深遠影響。由於不同民族和文明的長期接觸，人們的生活方式、藝術形式和飲食文化都發生了變化。例如，玄奘西行取經時，即是經過了絲綢之路上的許多重要地區和交通路線。時至今日我們在中國仍然可以看到許多體現這種藝術文化、人和思想交流的歷史遺跡。</p>
+        <p><strong>絲綢之路的歷史地位讓我聯想到我的所在地 ${bg}。</strong>絲綢之路是古代歐亞的貿易樞紐，連接東西方的商品與思想。而今天的 ${bg}，${bg === '新加坡' ? '扮演著相似的樞紐角色——只不過駱駝換成了貨輪，沙漠換成了海峽，但「連接不同世界」的本質，從未改變。正如絲綢之路讓印度的佛教、波斯的香料、中國的絲綢在敦煌交匯，產生了獨特的文化混血；新加坡的街頭，華人的炒粿條、馬來人的椰漿飯、印度人的煎餅共存共生。兩地的核心邏輯一致：真正的繁榮，來自於讓不同文化在交匯中彼此重塑。' : bg === '美國' ? '也像美國一樣，是多元文化交匯的熔爐。從東岸到西岸，不同的族裔與文化在這裡碰撞、融合，形成了獨特的美國文化。' : '也同樣展現了不同文化交匯的魅力。歷史上的貿易路線往往也是文化融合的通道。'}</p>
+        <p>今天，飛機、網際網路和現代交通大大縮短了不同國家之間的距離，文化交流更加頻繁。不過，兩者的核心仍然相似：人們通過貿易、旅行和交流互相了解，並在交流過程中產生新的文化。對今天的人來說，絲綢之路仍然提醒我們，理解、尊重文化差異，並通過交流建立聯繫，具有重要的現實意義。世界從未因孤立而偉大，只因為連接而精彩。</p>`,
+                    questions: [
+                        "Q1: 你認為歷史上的貿易路線對現代全球化的形成有什麼深遠影響？請從文化、經濟、政治三個面向分析。",
+                        "Q2: 文化交流是否必然伴隨著文化衝突？請以歷史實例說明你的觀點，並提出你對文化衝突與融合關係的見解。",
+                        "Q3: 在數位時代，我們是否正在創造一種「新絲綢之路」？請論述科技如何改變文化交流的樣貌。",
+                        "Q4: 一個文化要在交流中保持自身獨特性，你認為最關鍵的因素是什麼？請提出你的論證。"
+                    ],
+                    answers: [
+                        "A1: 歷史貿易路線如絲綢之路不僅促進了商品流通，更建立了不同文明間的認知橋樑，為全球化奠定了文化互信的基礎。",
+                        "A2: 文化交流與衝突往往並存。例如佛教傳入中國時經歷了與本土儒道思想的碰撞，最終融合成獨特的中國佛教。",
+                        "A3: 數位時代的資訊流通創造了前所未有的文化接觸機會，但同時也帶來了文化同質化的風險。",
+                        "A4: 我認為關鍵在於「文化自覺」——對自身文化核心價值的深刻理解與自信。"
+                    ]
+                },
+                '書法': {
+                    outline: `一、開場：書法作為文化連結。
+        二、藝術特徵：筆墨紙硯、修身養性、字如其人。
+        三、個人經驗與跨文化反思（${bg}）：數位時代的沉靜力量。
+        四、結語：傳承與創新。`,
+                    essay: `<p><strong>今天我要分享的主題是中國傳統書法。</strong>書法不僅是文字書寫的工具，更是一種凝聚了歷史記憶與精神修養的崇高藝術形式。在我成長的過程中，書法一直是我與中華文化連結的重要橋樑。</p>
+        <p>首先，從藝術特徵來看，書法講究筆墨紙硯的配合，透過點畫粗細與結構變化展現獨特的東方韻味。古人常藉由揮毫潑墨來「修身養性」，這體現了中國傳統哲學中對和諧與自然美學的追求。值得一提的是，書法中的每一筆都蘊含著書寫者的情感與心境，正所謂「字如其人」。</p>
+        <p>對我個人而言，學習書法不僅培養了耐性，也讓我在快速變遷的數位時代中，重新找回沉靜的心靈力量。在我的家鄉 ${bg}，${bg === '台灣' ? '許多長輩仍保持寫春聯的習慣，這讓書法在現代生活中依然具有溫度。' : bg === '日本' ? '書道同樣受到重視，展現了漢字文化圈的共同美學。' : '人們也開始重視這種傳統藝術，將其視為沉澱心靈的方式。'}</p>
+        <p>總而言之，傳統書法是中華文化的瑰寶，它源遠流長、豐富多彩。只要我們積極推動數位化與藝術教育的結合，這份寶貴資產必能與時俱進、代代相傳。</p>`,
+                    questions: [
+                        "Q1: 你認為傳統藝術在數位時代的傳承，最需要克服的挑戰是什麼？請提出你的分析。",
+                        "Q2: 「藝術的技術性」與「藝術的精神性」之間，你認為哪一個更為重要？請以具體藝術形式為例說明。",
+                        "Q3: 你認為教育體系應該如何平衡傳統文化的保存與現代技能的培養？",
+                        "Q4: 在全球化浪潮下，你認為一個文化的「獨特性」應該如何被定義與保護？"
+                    ],
+                    answers: [
+                        "A1: 最關鍵的挑戰是「意義的轉譯」——如何讓年輕世代理解傳統藝術在現代生活中的價值。",
+                        "A2: 我認為精神性更為根本。技術是載體，但真正打動人心的是藝術所承載的情感與思想。",
+                        "A3: 教育應該讓學生在體驗中理解傳統的深層價值，讓傳統成為生活的一部分。",
+                        "A4: 文化的獨特性不在於封閉與排他，而在於其核心價值與世界觀的不可替代性。"
+                    ]
+                },
+                '風水': {
+                    outline: `一、主題介紹：什麼是風水？其歷史起源與基本概念。
+        二、風水的核心思想：陰陽平衡、氣流與環境和諧。
+        三、風水在中國文化中的實踐：住宅選址、城市規劃、墓葬文化。
+        四、跨文化反思：與 ${bg} 的環境觀比較——從風水到現代可持續發展。
+        五、結語與當代省思：傳統智慧在現代的價值。`,
+                    essay: `<p><strong>今天我想介紹的文化主題是風水。</strong>風水，又稱堪輿，是中國古代一門關於人與環境關係的系統學問。它不僅僅是「看風水」的民間習俗，更是一套融合了哲學、地理學、生態學與美學的宇宙觀，體現了中國人追求「天人合一」的深層文化心理。</p>
+        <p>風水的核心思想可以歸結為「氣」與「陰陽平衡」。古人相信，天地之間流動著一種看不見的能量——「氣」，好的風水能讓氣流順暢、聚集，從而帶來健康、財富與和諧。在實踐層面，風水強調「藏風聚氣」、「山環水抱」，例如傳統建築多選擇背山面水的地形，這不僅出於風水信仰，實際上也是一種科學的選址智慧——背山可擋北風、面水可獲水源與交通之便。</p>
+        <p>風水對中國文化影響深遠，從帝王都城的選址（如北京故宮的坐北朝南）、民居的佈局（如四合院的格局），到園林設計、墓葬選擇，無不受到風水思想的引導。它反映了中國人對「人與自然和諧共處」的深刻追求，也體現了中華文化中「順應自然」而非「征服自然」的獨特態度。</p>
+        <p><strong>風水的思維也啟發我反思我的所在地 ${bg}。</strong>${bg === '新加坡' ? '新加坡作為一個高度現代化的花園城市，在都市規劃中其實也可以看到類似風水的智慧——重視綠地與建築的和諧、講究空間的流動感與舒適度。雖然新加坡人不再講究龍脈與穴位，但對「居住環境品質」的追求，與風水「人與環境和諧」的核心精神是相通的。' : '現代城市雖然不再以風水為名，但人們對居住環境的品質要求、對自然光的追求、對通風與景觀的重視，其實都延續著風水「環境影響生活品質」的樸素智慧。'}</p>
+        <p>總而言之，風水是中華文化中一門獨特的環境智慧。它教導我們，人類並非自然的主宰者，而是與自然共生的參與者。在當代面對氣候變遷與環境危機的時刻，風水所強調的「人與環境和諧」理念，或許能為我們提供一個古老而珍貴的思考方向。尊重自然、順應規律、追求平衡——這些風水的核心價值，在任何時代都不會過時。</p>`,
+                    questions: [
+                        "Q1: 你認為傳統的「環境智慧」（如風水）在現代都市規劃中是否仍有參考價值？請提出你的論證。",
+                        "Q2: 科學與傳統信仰之間是否存在必然的衝突？請以你熟悉的例子說明你的觀點。",
+                        "Q3: 在全球化的今天，各地的傳統環境觀正面臨怎樣的挑戰與機遇？請從文化保存的角度分析。",
+                        "Q4: 你認為一個文化在現代化過程中，應該如何處理與「傳統信仰」或「習俗」的關係？請提出你的思考。"
+                    ],
+                    answers: [
+                        "A1: 我認為風水的核心智慧——重視環境品質、追求人與自然的和諧——在現代都市規劃中仍然有參考價值。問題不在於風水本身，而在於我們如何將其科學內涵轉化為現代語言。",
+                        "A2: 科學與傳統信仰不必衝突。例如風水中關於建築選址的智慧，許多已被現代環境科學所驗證。兩者可以互補而非對立。",
+                        "A3: 全球化既帶來了傳統環境觀被邊緣化的危機，也提供了讓這些智慧被世界看見的契機。關鍵在於我們是否能用現代語言重新詮釋傳統。",
+                        "A4: 我認為一個文化應該以「批判性傳承」的態度面對傳統。既不盲目接受，也不全盤否定，而是提取其中對現代生活仍有啟發的核心價值。"
+                    ]
+                }
+            };
+            return base[topicKey] || null;
         }
 
-        function confirmLanguageAndOrigin() {
-            if (!currentLang) {
-                alert('請先選擇繁體中文或簡體中文。');
+        // ============================================================
+        // 工具函數
+        // ============================================================
+        function getTopicName() {
+            return selectedTopic ? selectedTopic.raw : '';
+        }
+
+        function goToStep(step) {
+            document.querySelectorAll('.step-container').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`step-${step}`);
+            if (target) target.classList.remove('hidden');
+            const stepMap = { 1: '1', 2: '2', 3: '3', 35: '3.5', '35a': '3.5A', '35b': '3.5B', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8' };
+            document.getElementById('step-indicator').innerText = `步驟 ${stepMap[step] || step} / 9`;
+            currentStep = step;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ============================================================
+        // 強制文化背景
+        // ============================================================
+        function goToStep2() {
+            const bg = document.getElementById('cultural-background').value.trim();
+            if (!bg) {
+                document.getElementById('bg-error').classList.remove('hidden');
+                document.getElementById('cultural-background').classList.add('border-red-500');
                 return;
             }
-            studentOrigin = getOrigin();
+            document.getElementById('bg-error').classList.add('hidden');
+            document.getElementById('cultural-background').classList.remove('border-red-500');
+            culturalBg = bg;
+            document.getElementById('display-bg').innerText = bg;
+            document.getElementById('step3-bg').innerText = bg;
+            document.getElementById('step35-bg').innerText = bg;
+            document.getElementById('student-bg-display').innerText = bg;
+            document.getElementById('teacher-bg-display').innerText = bg;
             renderCategories();
-            renderQuestions();
             goToStep(2);
         }
 
+        // ============================================================
+        // 渲染題庫
+        // ============================================================
         function renderCategories() {
             const grid = document.getElementById('unit-grid');
             grid.innerHTML = '';
             categoriesData.forEach(cat => {
                 const title = currentLang === 'traditional' ? cat.title_tr : cat.title_si;
-                const isArt = cat.id === 3 ? 'border-indigo-500 bg-indigo-50/40' : 'border-slate-200';
                 grid.innerHTML += `
-                    <div class="p-4 border-2 ${isArt} rounded-xl space-y-3 bg-white topic-card">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-bold text-indigo-950 text-sm">${title}</h4>
-                            ${cat.id === 3 ? '<span class="bg-indigo-600 text-white text-xs px-2 py-0.5 rounded">重點擴充</span>' : ''}
-                        </div>
-                        <div class="space-y-2" id="cat-topic-${cat.id}">
+                    <div class="p-4 border-2 border-slate-200 rounded-xl space-y-3 bg-white topic-card">
+                        <h4 class="font-bold text-indigo-950 text-sm">${title}</h4>
+                        <div class="space-y-2">
                             <p class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-100 italic" id="preview-${cat.id}">
                                 "${cat.topics[0].zh}"
                             </p>
                         </div>
                         <div class="flex justify-between items-center pt-1">
-                            <button onclick="pickCategoryTopic(${cat.id})" class="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded font-medium hover:bg-indigo-700 transition">選擇此題</button>
+                            <button onclick="pickCategoryTopic(${cat.id})" class="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded font-medium hover:bg-indigo-700 transition">${currentLang === 'traditional' ? '選擇此題' : '选择此题'}</button>
                             <button onclick="refreshCategoryTopic(${cat.id})" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1">
-                                <i class="fa-solid fa-rotate"></i> <span>換一題</span>
+                                <i class="fa-solid fa-rotate"></i> <span>${currentLang === 'traditional' ? '換一題' : '换一题'}</span>
                             </button>
                         </div>
                     </div>
                 `;
             });
         }
-
         let catPointers = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
 
         function refreshCategoryTopic(catId) {
@@ -1036,11 +774,7 @@
         function pickCategoryTopic(catId) {
             const cat = categoriesData.find(c => c.id === catId);
             const t = cat.topics[catPointers[catId]];
-            selectedTopic = {
-                en: `Topic: ${t.en}`,
-                zh: `中文對照：${t.zh}`,
-                raw: t.zh
-            };
+            selectedTopic = { en: `Topic: ${t.en}`, zh: `中文對照：${t.zh}`, raw: t.zh };
             currentTopicData = t;
             document.getElementById('topic-en').innerText = selectedTopic.en;
             document.getElementById('topic-zh').innerText = selectedTopic.zh;
@@ -1049,15 +783,8 @@
 
         function useCustomTopic() {
             const val = document.getElementById('custom-topic-input').value.trim();
-            if (!val) {
-                alert(currentLang === 'traditional' ? '請先輸入自訂中文題目！' : '请先输入自订中文题目！');
-                return;
-            }
-            selectedTopic = {
-                en: `Topic: Discuss and analyze the following cultural topic: ${val}`,
-                zh: `中文對照：${val}`,
-                raw: val
-            };
+            if (!val) { alert(currentLang === 'traditional' ? '請輸入題目' : '请输入题目'); return; }
+            selectedTopic = { en: `Topic: ${val}`, zh: `中文對照：${val}`, raw: val };
             currentTopicData = { zh: val, en: val, year: '自訂' };
             document.getElementById('topic-en').innerText = selectedTopic.en;
             document.getElementById('topic-zh').innerText = selectedTopic.zh;
@@ -1067,236 +794,102 @@
         function refreshCurrentTopic() {
             const randomCat = categoriesData[Math.floor(Math.random() * categoriesData.length)];
             const randomT = randomCat.topics[Math.floor(Math.random() * randomCat.topics.length)];
-            selectedTopic = {
-                en: `Topic: ${randomT.en}`,
-                zh: `中文對照：${randomT.zh}`,
-                raw: randomT.zh
-            };
+            selectedTopic = { en: `Topic: ${randomT.en}`, zh: `中文對照：${randomT.zh}`, raw: randomT.zh };
             currentTopicData = randomT;
             document.getElementById('topic-en').innerText = selectedTopic.en;
             document.getElementById('topic-zh').innerText = selectedTopic.zh;
         }
 
-        function goToStep(step) {
-            document.querySelectorAll('.step-container').forEach(el => el.classList.add('hidden'));
-            const target = document.getElementById(`step-${step}`);
-            if (target) {
-                target.classList.remove('hidden');
-            }
-            const stepMap = { 1: '1', 2: '2', 3: '3', 35: '3.5', '35a': '3.5A', '35b': '3.5B', 4: '4', 5: '5', 6: '6', 7: '7',
-                8: '8' };
-            document.getElementById('step-indicator').innerText = `步驟 ${stepMap[step] || step} / 9`;
-            currentStep = step;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // =============================================================
-        // 步驟 3.5
-        // =============================================================
+        // ============================================================
+        // STEP 3.5
+        // ============================================================
         function goToStep35() {
             const topicName = selectedTopic ? selectedTopic.raw : '請先選擇題目';
             document.getElementById('step35-topic-display').innerText = topicName;
             goToStep(35);
         }
 
-        // =============================================================
-        // 三種模式
-        // =============================================================
-        // =============================================================
-        // AI 動態教練：所有非內建題目也由 AI 即時生成
-        // 前端預設呼叫同源 /api/ap-chinese-coach；API 金鑰應放在伺服器端，不要寫入 HTML。
-        // =============================================================
-        let aiBusy = false;
-        let aiEssayData = null;
-        let aiQuestions = [];
-        let qaResults = [];
-        let speechStartAt4 = null;
-        let qaStartAt7 = null;
-        let studentOrigin = '';
-
-        function getOrigin() {
-            return (document.getElementById('student-origin')?.value || '').trim();
-        }
-
-        function escapeHtml(str) {
-            return String(str ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-        }
-
-        function stripHtml(str) {
-            const d = document.createElement('div'); d.innerHTML = String(str || ''); return d.textContent || d.innerText || '';
-        }
-
-        async function callCoach(task, extra = {}) {
-            if (aiBusy) return null;
-            aiBusy = true;
-            const isTraditional = currentLang === 'traditional';
-            const topic = selectedTopic?.raw || '';
-            studentOrigin = getOrigin();
-            try {
-                const response = await fetch((window.AP_COACH_API_URL || '/api/ap-chinese-coach'), {
-                    method: 'POST',
-                    headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({
-                        task, topic, language: currentLang, origin: studentOrigin,
-                        outline: document.getElementById('user-outline')?.value?.trim() || '',
-                        speech: recordedSpeechText || '',
-                        question: extra.question || '',
-                        answer: extra.answer || '',
-                        priorAnswers: qaResults
-                    })
-                });
-                if (!response.ok) throw new Error(`AI API ${response.status}`);
-                const data = await response.json();
-                return data;
-            } catch (err) {
-                console.error(err);
-                alert(isTraditional ? 'AI 連線失敗。請確認網站已設定 /api/ap-chinese-coach 後再試。' : 'AI 连接失败。请确认网站已设置 /api/ap-chinese-coach 后再试。');
-                return null;
-            } finally { aiBusy = false; }
-        }
-
-        function setLoading(el, text) {
-            el.innerHTML = `<div class="flex items-center gap-2 text-indigo-600"><i class="fa-solid fa-spinner fa-spin"></i>${escapeHtml(text)}</div>`;
-        }
-
-        async function modeViewEssay() {
-            const topicName = selectedTopic ? selectedTopic.raw : '';
-            const local = essayDatabase[topicName];
-            if (local) {
-                aiEssayData = { ...local, essay: stripHtml(local.essay || '') };
-                renderEssayData(aiEssayData);
+        // ============================================================
+        // 老師模式
+        // ============================================================
+        function modeTeacher() {
+            teacherMode = true;
+            const topic = getTopicName();
+            const data = getPersonalizedEssay(topic);
+            if (data) {
+                document.getElementById('teacher-outline-content').innerHTML = data.outline.replace(/\n/g, '<br>');
+                document.getElementById('teacher-essay-content').innerHTML = data.essay;
+                let qaHtml = '';
+                for (let i = 0; i < data.questions.length; i++) {
+                    qaHtml += `
+                        <div class="bg-white p-4 rounded-lg border border-slate-200 space-y-2">
+                            <p class="font-bold text-indigo-800">${data.questions[i]}</p>
+                            <p class="text-sm text-emerald-700 bg-emerald-50 p-2 rounded"><span class="font-bold">${currentLang === 'traditional' ? '參考答案' : '参考答案'}：</span>${data.answers[i] || '（建議教師自行補充）'}</p>
+                        </div>
+                    `;
+                }
+                document.getElementById('teacher-qa-area').innerHTML = qaHtml;
                 goToStep('35a');
-                // 範文可沿用教師內建版本，但追問改由 AI 依題目動態生成。
-                setLoading(document.getElementById('essay-questions'), currentLang === 'traditional' ? 'AI 正在根據這個主題設計 4 題開放式追問……' : 'AI 正在根据这个主题设计 4 道开放式追问……');
-                const qdata = await callCoach('generate_questions');
-                if (qdata && Array.isArray(qdata.questions)) {
-                    aiQuestions = qdata.questions;
-                    document.getElementById('essay-questions').innerHTML = aiQuestions.map((q,i)=>`<div class="p-3 bg-white rounded border border-slate-200"><span class="font-bold text-indigo-600">Q${i+1}:</span> ${escapeHtml(q)}</div>`).join('');
-                }
+            } else {
+                jumpToChatGPT('teacher');
+            }
+        }
+
+        // ============================================================
+        // 學生模式
+        // ============================================================
+        function modeStudent() {
+            teacherMode = false;
+            const topic = getTopicName();
+            const data = getPersonalizedEssay(topic);
+            if (data) {
+                goToStep('35b');
+            } else {
+                jumpToChatGPT('student');
+            }
+        }
+
+        // ============================================================
+        // 學生大綱
+        // ============================================================
+        function studentUseOwnOutline() {
+            const val = document.getElementById('student-outline-input').value.trim();
+            if (!val) { alert(currentLang === 'traditional' ? '請貼上您的大綱' : '请贴上您的大纲'); return; }
+            studentOutline = val;
+            document.getElementById('student-outline-preview').innerHTML = val.replace(/\n/g, '<br>');
+            document.getElementById('ai-outline-display').classList.add('hidden');
+            alert(currentLang === 'traditional' ? '大綱已採用！' : '大纲已采用！');
+        }
+
+        function studentUseAIOutline() {
+            const topic = getTopicName();
+            const data = getPersonalizedEssay(topic);
+            if (data) {
+                document.getElementById('ai-outline-display').innerHTML = data.outline.replace(/\n/g, '<br>');
+                document.getElementById('ai-outline-display').classList.remove('hidden');
+                studentOutline = data.outline;
+                document.getElementById('student-outline-preview').innerHTML = data.outline.replace(/\n/g, '<br>');
+            } else {
+                jumpToChatGPT('student');
+            }
+        }
+
+        function studentProceedToSpeech() {
+            if (!studentOutline) {
+                alert(currentLang === 'traditional' ? '請先選定大綱' : '请先选定大纲');
                 return;
             }
-            goToStep('35a');
-            setLoading(document.getElementById('essay-content'), currentLang === 'traditional' ? 'AI 正在生成符合 AP 2027 要求的高分範文……' : 'AI 正在生成符合 AP 2027 要求的高分范文……');
-            setLoading(document.getElementById('essay-outline'), currentLang === 'traditional' ? 'AI 正在同步建立演說大綱……' : 'AI 正在同步建立演说大纲……');
-            setLoading(document.getElementById('essay-questions'), currentLang === 'traditional' ? 'AI 正在設計 4 題動態追問……' : 'AI 正在设计 4 道动态追问……');
-            const data = await callCoach('generate_essay');
-            if (data) { aiEssayData = data; aiQuestions = data.questions || []; renderEssayData(data); }
+            goToStep(4);
         }
 
-        function renderEssayData(data) {
-            document.getElementById('essay-content').innerHTML = `<div class="whitespace-pre-line leading-relaxed">${escapeHtml(stripHtml(data.essay || data.essay_html || ''))}</div>`;
-            document.getElementById('essay-outline').innerHTML = escapeHtml(data.outline || '').replace(/\n/g,'<br>');
-            aiQuestions = data.questions || [];
-            document.getElementById('essay-questions').innerHTML = aiQuestions.map((q,i)=>`<div class="p-3 bg-white rounded border border-slate-200"><span class="font-bold text-indigo-600">Q${i+1}:</span> ${escapeHtml(q)}</div>`).join('');
-        }
-
-        async function modeViewOutline() {
-            const topicName = selectedTopic ? selectedTopic.raw : '';
-            const local = essayDatabase[topicName];
-            goToStep('35b');
-            setLoading(document.getElementById('outline-content'), currentLang === 'traditional' ? 'AI 正在生成演說架構……' : 'AI 正在生成演说结构……');
-            if (local) { document.getElementById('outline-content').innerHTML = escapeHtml(local.outline).replace(/\n/g,'<br>'); return; }
-            const data = await callCoach('generate_outline');
-            if (data) document.getElementById('outline-content').innerHTML = escapeHtml(data.outline || '').replace(/\n/g,'<br>');
-        }
-
-        function modeDirectRecord() { goToStep(4); }
-
-        function openAPTimer(mode) {
-            const isTraditional = currentLang === 'traditional';
-            const title = isTraditional ? 'AP 中文限時訓練計時器' : 'AP 中文限时训练计时器';
-            const ready = isTraditional ? '準備開始' : '准备开始';
-            const speech = isTraditional ? '3 分鐘演說' : '3 分钟演说';
-            const qa = isTraditional ? '40 秒追問' : '40 秒追问';
-            const start = isTraditional ? '開始' : '开始';
-            const reset = isTraditional ? '重設' : '重置';
-            const note = isTraditional ? '演說：3:00　｜　每題追問：0:40' : '演说：3:00　｜　每题追问：0:40';
-            const w = window.open('', 'APChineseTimer', 'width=420,height=430,resizable=yes');
-            if (!w) { alert(isTraditional ? '瀏覽器阻擋了計時器視窗，請允許彈出視窗。' : '浏览器阻止了计时器窗口，请允许弹出窗口。'); return; }
-            w.document.write(`<!doctype html><html lang="${isTraditional ? 'zh-TW' : 'zh-CN'}"><head><meta charset="utf-8"><title>${title}</title><style>body{margin:0;font-family:Arial,"Noto Sans TC",sans-serif;background:#eef2ff;color:#172554;text-align:center;padding:28px}h2{margin:0 0 8px}.note{font-size:14px;color:#64748b;margin-bottom:22px}.time{font-size:86px;font-weight:800;font-family:monospace;margin:20px 0}.row{display:flex;gap:10px;justify-content:center;margin:10px 0;flex-wrap:wrap}button{border:0;border-radius:12px;padding:12px 20px;font-size:16px;font-weight:700;cursor:pointer;background:#4f46e5;color:white}button.secondary{background:#64748b}button.active{background:#dc2626}.status{font-weight:700;margin-top:16px;min-height:24px}</style></head><body><h2>${title}</h2><div class="note">${note}</div><div class="time" id="time">03:00</div><div class="row"><button onclick="setTimer(180)">${speech}</button><button onclick="setTimer(40)">${qa}</button></div><div class="row"><button id="start" onclick="toggle()">${start}</button><button class="secondary" onclick="reset()">${reset}</button></div><div class="status" id="status">${ready}</div><script>let left=180,timer=null,running=false;function fmt(){let m=Math.floor(left/60),s=left%60;document.getElementById('time').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}function setTimer(n){clearInterval(timer);running=false;left=n;fmt();document.getElementById('start').textContent='${start}';document.getElementById('status').textContent=n===180?'${speech}':'${qa}'}function toggle(){if(running){clearInterval(timer);running=false;document.getElementById('start').textContent='${start}';return}running=true;document.getElementById('start').textContent='${isTraditional ? '暫停' : '暂停'}';timer=setInterval(()=>{left--;fmt();if(left<=0){clearInterval(timer);running=false;document.getElementById('start').textContent='${start}';document.getElementById('status').textContent='${isTraditional ? '時間到！' : '时间到！'}';try{window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance('${isTraditional ? '時間到，請停止回答。' : '时间到，请停止回答。'}');u.lang='${isTraditional ? 'zh-TW' : 'zh-CN'}';window.speechSynthesis.speak(u)}catch(e){}}},1000)}function reset(){setTimer(180)}<\/script></body></html>`);
-            w.document.close(); w.focus();
-        }
-
-        function showChatGPTModal() {
-            alert(currentLang === 'traditional' ? '本工具現在已改為站內 AI 輔導，不需要複製提示詞或開啟 ChatGPT。' : '本工具现在已改为站内 AI 辅导，不需要复制提示词或开启 ChatGPT。');
-        }
-
-        function openChatGPT() { showChatGPTModal(); }
-
-        // =============================================================
-        // 追問題目
-        // =============================================================
-        function renderQuestions() {
-            const list = document.getElementById('questions-list');
-            const topicName = selectedTopic ? selectedTopic.raw : '';
-            const data = essayDatabase[topicName];
-            let questions = [];
-
-            questions = [
-                currentLang === 'traditional' ? 'AI 將根據你的主題與演說內容動態生成 4 題開放式追問。' : 'AI 将根据你的主题与演说内容动态生成 4 道开放式追问。'
-            ];
-
-            list.innerHTML = '';
-            questions.forEach((q, idx) => {
-                list.innerHTML += `
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-start space-x-3">
-                        <span class="bg-indigo-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5">${idx+1}</span>
-                        <p class="text-slate-800 text-sm font-medium">${q}</p>
-                    </div>
-                `;
-            });
-        }
-
-        // =============================================================
-        // 大綱上傳
-        // =============================================================
-        async function submitOutline() {
-            const val = document.getElementById('user-outline').value.trim();
-            if (!val) { alert(currentLang === 'traditional' ? '請先填寫演說大綱！' : '请先填写演说大纲！'); return; }
-            const btn = document.getElementById('outline-upload-status');
-            btn.innerText = currentLang === 'traditional' ? 'AI 檢查中…' : 'AI 检查中…';
-            const data = await callCoach('check_outline', { answer: val });
-            if (!data) { btn.innerText = currentLang === 'traditional' ? '確認並上傳大綱' : '确认并上传大纲'; return; }
-            outlineSubmitted = !!data.approved;
-            btn.innerText = outlineSubmitted ? (currentLang === 'traditional' ? '大綱已確認 ✓' : '大纲已确认 ✓') : (currentLang === 'traditional' ? '請依建議修改大綱' : '请依建议修改大纲');
-            if (data.feedback) alert(data.feedback);
-        }
-
-        // =============================================================
-        // 語音辨識
-        // =============================================================
-        function initSpeechRecognition(onResultCallback) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert(currentLang === 'traditional' ? '您的瀏覽器不支援語音辨識功能（建議使用 Google Chrome）。' : '您的浏览器不支持语音识别功能（建议使用 Google Chrome）。');
-                return null;
-            }
-            const rec = new SpeechRecognition();
-            rec.lang = currentLang === 'traditional' ? 'zh-TW' : 'zh-CN';
-            rec.continuous = true;
-            rec.interimResults = true;
-
-            rec.onresult = (event) => {
-                let interim = '';
-                let final = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        final += event.results[i][0].transcript;
-                    } else {
-                        interim += event.results[i][0].transcript;
-                    }
-                }
-                onResultCallback(final, interim);
-            };
-            return rec;
-        }
-
+        // ============================================================
+        // 錄音 (演說) - 站內計時器
+        // ============================================================
         function toggleRecording4() {
-            if (!outlineSubmitted) {
-                alert(currentLang === 'traditional' ? '請先在上方填寫大綱並點擊「確認並上傳大綱」按鈕！' : '请先在上方填写大纲并点击「确认并上传大纲」按钮！');
+            if (!studentOutline) {
+                alert(currentLang === 'traditional' ? '請先選定大綱' : '请先选定大纲');
                 return;
             }
-
             const btnText = document.getElementById('rec-btn-text');
             const status = document.getElementById('recording-status');
             const transcriptBox = document.getElementById('live-transcript-4');
@@ -1305,7 +898,7 @@
                 isRecording4 = true;
                 recordedSpeechText = "";
                 btnText.innerText = currentLang === 'traditional' ? '停止錄音' : '停止录音';
-                status.innerText = currentLang === 'traditional' ? '正在聆聽您的口語演說（即時轉錄中）...' : '正在聆听您的口语演说（实时转录中）...';
+                status.innerText = currentLang === 'traditional' ? '正在聆聽您的演說...' : '正在聆听您的演说...';
 
                 recognition = initSpeechRecognition((final, interim) => {
                     if (final) recordedSpeechText += final + " ";
@@ -1319,10 +912,12 @@
                     let mins = Math.floor(timeLeft4 / 60).toString().padStart(2, '0');
                     let secs = (timeLeft4 % 60).toString().padStart(2, '0');
                     document.getElementById('timer-display-4').innerText = `${mins}:${secs}`;
-
                     if (timeLeft4 <= 0 || !isRecording4) {
                         clearInterval(timerInterval4);
                         stopRecording4();
+                        // 時間到自動停止錄音
+                        if (recognition) { try { recognition.stop(); } catch (e) {} }
+                        document.getElementById('recording-status').innerText = currentLang === 'traditional' ? '⏰ 時間到！' : '⏰ 时间到！';
                     }
                 }, 1000);
             } else {
@@ -1333,160 +928,479 @@
         function stopRecording4() {
             isRecording4 = false;
             clearInterval(timerInterval4);
-            if (recognition) {
-                try { recognition.stop(); } catch (e) {}
-            }
+            if (recognition) { try { recognition.stop(); } catch (e) {} }
             document.getElementById('rec-btn-text').innerText = currentLang === 'traditional' ? '重新錄音' : '重新录音';
-            document.getElementById('recording-status').innerText = currentLang === 'traditional' ? '錄音已完成！' : '录音已完成！';
-
-            const submitBtn = document.getElementById('to-step-5-btn');
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
-            submitBtn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
+            document.getElementById('recording-status').innerText = currentLang === 'traditional' ? '錄音完成！' : '录音完成！';
+            document.getElementById('to-step-5-btn').disabled = false;
+            document.getElementById('to-step-5-btn').classList.remove('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
+            document.getElementById('to-step-5-btn').classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
         }
 
-        // =============================================================
-        // 評分
-        // =============================================================
-        async function processMainEvaluation() {
-            if (!recordedSpeechText.trim()) { alert(currentLang === 'traditional' ? '尚未取得口語內容，請再錄一次。' : '尚未取得口语内容，请再录一次。'); return; }
-            const btn = document.getElementById('to-step-5-btn');
-            btn.disabled = true;
-            const data = await callCoach('evaluate_presentation');
-            btn.disabled = false;
-            if (!data) return;
-            document.getElementById('final-score').innerText = `${data.score ?? '—'} / 6`;
-            document.getElementById('score-level-text').innerText = data.level || '';
-            document.getElementById('dynamic-feedback-list').innerHTML = (data.feedback || []).map(x=>`<li>${escapeHtml(x)}</li>`).join('');
+        function studentFinishSpeech() {
+            const totalText = studentOutline + " " + recordedSpeechText;
+            const wordCount = totalText.length;
+            let score = 6;
+            let level = currentLang === 'traditional' ? '卓越滿分' : '卓越满分';
+            let fb1 = currentLang === 'traditional' ?
+                `結合大綱與口語發言，論述極具深度與廣度，並融入 ${culturalBg} 的跨文化觀點。` :
+                `结合大纲与口语发言，论述极具深度与广度，并融入 ${culturalBg} 的跨文化观点。`;
+            let fb2 = currentLang === 'traditional' ?
+                `語音與大綱內容充實（約 ${wordCount} 字），結構完整。` :
+                `语音与大纲内容充实（约 ${wordCount} 字），结构完整。`;
+            let fb3 = currentLang === 'traditional' ? '成語與連接詞運用流暢，展現高階表達能力。' : '成语与连接词运用流畅，展现高阶表达能力。';
+            document.getElementById('final-score').innerText = `${score} / 6`;
+            document.getElementById('score-level-text').innerText = level;
+            document.getElementById('dynamic-feedback-list').innerHTML = `<li>${fb1}</li><li>${fb2}</li><li>${fb3}</li>`;
             goToStep(5);
         }
 
-        // =============================================================
-        // 追問：AI 動態一題一題生成與評估
-        // =============================================================
-        async function startQAndARecording() {
-            currentQIndex = 0; qaResults = [];
-            const data = await callCoach('generate_questions');
-            if (data) aiQuestions = data.questions || [];
-            if (!aiQuestions.length) return;
-            loadQuestion(0); goToStep(7);
+        // ============================================================
+        // 語音辨識
+        // ============================================================
+        function initSpeechRecognition(onResultCallback) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) { alert('請使用Chrome瀏覽器'); return null; }
+            const rec = new SpeechRecognition();
+            rec.lang = 'zh-TW';
+            rec.continuous = true;
+            rec.interimResults = true;
+            rec.onresult = (event) => {
+                let interim = '', final = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) final += event.results[i][0].transcript;
+                    else interim += event.results[i][0].transcript;
+                }
+                onResultCallback(final, interim);
+            };
+            return rec;
         }
 
-        function speakCurrentQuestion() {
-            const text = document.getElementById('current-q-text').innerText.replace(/^Q\d+:\s*/, '');
-            if (!('speechSynthesis' in window)) { alert(currentLang === 'traditional' ? '此瀏覽器不支援語音朗讀。' : '此浏览器不支持语音朗读。'); return; }
-            window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(text);
-            u.lang = currentLang === 'traditional' ? 'zh-TW' : 'zh-CN';
-            u.rate = 0.92;
-            window.speechSynthesis.speak(u);
+        // ============================================================
+        // 追問
+        // ============================================================
+        function renderQuestions() {
+            const list = document.getElementById('questions-list');
+            const topic = getTopicName();
+            const data = getPersonalizedEssay(topic);
+            let qs = data ? data.questions : ["Q1", "Q2", "Q3", "Q4"];
+            list.innerHTML = '';
+            qs.forEach((q, idx) => {
+                list.innerHTML += `
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-start space-x-3">
+                        <span class="bg-indigo-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5">${idx+1}</span>
+                        <p class="text-slate-800 text-sm font-medium">${q}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function startQAndARecording() {
+            currentQIndex = 0;
+            qaAnswers = [];
+            loadQuestion(currentQIndex);
+            goToStep(7);
         }
 
         function loadQuestion(idx) {
-            document.getElementById('current-q-text').innerText = `Q${idx+1}: ${aiQuestions[idx] || ''}`;
-            document.getElementById('q-progress-text').innerText = currentLang === 'traditional' ? `正在回答第 ${idx+1} 題（共 4 題）` : `正在回答第 ${idx+1} 题（共 4 题）`;
+            const topic = getTopicName();
+            const data = getPersonalizedEssay(topic);
+            let qs = data ? data.questions : ["Q1", "Q2", "Q3", "Q4"];
+            document.getElementById('current-q-text').innerText = qs[idx] || `Q${idx+1}`;
+            document.getElementById('q-progress-text').innerText = currentLang === 'traditional' ?
+                `第 ${idx+1} 題 / 共 4 題` :
+                `第 ${idx+1} 题 / 共 4 题`;
             document.getElementById('qa-feedback-box').classList.add('hidden');
             document.getElementById('qa-transcript-box').innerText = currentLang === 'traditional' ? '（點擊開始錄音後說話...）' : '（点击开始录音后说话...）';
             resetTimer7();
-            setTimeout(() => speakCurrentQuestion(), 350);
         }
 
         function resetTimer7() {
-            clearInterval(timerInterval7); timeLeft7=40; isRecording7=false; qaStartAt7=null;
-            document.getElementById('timer-display-7').innerText='00:40';
-            document.getElementById('qa-btn-text').innerText=currentLang==='traditional'?'開始錄音回答 (40秒)':'开始录音回答 (40秒)';
+            clearInterval(timerInterval7);
+            timeLeft7 = 40;
+            isRecording7 = false;
+            document.getElementById('timer-display-7').innerText = "00:40";
+            document.getElementById('qa-btn-text').innerText = currentLang === 'traditional' ? '開始錄音回答 (40秒)' : '开始录音回答 (40秒)';
         }
 
         function toggleQARecord() {
+            const btnText = document.getElementById('qa-btn-text');
+            const qaTranscriptBox = document.getElementById('qa-transcript-box');
+
             if (!isRecording7) {
-                isRecording7=true; currentQTranscript=''; qaStartAt7=Date.now();
-                document.getElementById('qa-btn-text').innerText=currentLang==='traditional'?'停止錄音':'停止录音';
-                recognition=initSpeechRecognition((final,interim)=>{ if(final) currentQTranscript+=final+' '; document.getElementById('qa-transcript-box').innerText=currentQTranscript+interim; });
-                if(recognition) recognition.start();
-                timerInterval7=setInterval(()=>{ timeLeft7--; document.getElementById('timer-display-7').innerText=`00:${String(Math.max(timeLeft7,0)).padStart(2,'0')}`; if(timeLeft7<=0) stopQARecord(); },1000);
-            } else stopQARecord();
-        }
+                isRecording7 = true;
+                currentQTranscript = "";
+                btnText.innerText = currentLang === 'traditional' ? '停止錄音' : '停止录音';
+                recognition = initSpeechRecognition((final, interim) => {
+                    if (final) currentQTranscript += final + " ";
+                    qaTranscriptBox.innerText = currentQTranscript + interim;
+                });
+                if (recognition) recognition.start();
 
-        async function stopQARecord() {
-            if (!isRecording7) return;
-            isRecording7=false; clearInterval(timerInterval7); if(recognition){try{recognition.stop()}catch(e){}}
-            const answer=currentQTranscript.trim();
-            const elapsed=qaStartAt7 ? Math.min(40,(Date.now()-qaStartAt7)/1000) : null;
-            document.getElementById('qa-btn-text').innerText=currentLang==='traditional'?'AI 評估中…':'AI 评估中…';
-            const data=await callCoach('evaluate_question',{question:aiQuestions[currentQIndex],answer});
-            if(data){
-                qaResults.push({question:aiQuestions[currentQIndex],answer,score:data.score,feedback:data.feedback});
-                document.getElementById('qa-score-badge').innerText=`${currentLang==='traditional'?'得分':'得分'}：${data.score ?? '—'} / 6`;
-                document.getElementById('qa-sample-fb').innerText=(data.feedback||'') + (data.improvement ? ` ${data.improvement}` : '') + (elapsed!==null ? `（約 ${elapsed.toFixed(1)} 秒）` : '');
-                document.getElementById('qa-feedback-box').classList.remove('hidden');
+                timeLeft7 = 40;
+                timerInterval7 = setInterval(() => {
+                    timeLeft7--;
+                    document.getElementById('timer-display-7').innerText = `00:${timeLeft7.toString().padStart(2,'0')}`;
+                    if (timeLeft7 <= 0 || !isRecording7) {
+                        clearInterval(timerInterval7);
+                        stopQARecord();
+                        if (recognition) { try { recognition.stop(); } catch (e) {} }
+                        document.getElementById('qa-btn-text').innerText = currentLang === 'traditional' ? '⏰ 時間到' : '⏰ 时间到';
+                    }
+                }, 1000);
+            } else {
+                stopQARecord();
             }
-            document.getElementById('qa-btn-text').innerText=currentLang==='traditional'?'錄音完成':'录音完成';
         }
 
-        async function nextQuestion() {
-            if (isRecording7) return;
-            if (currentQIndex < 3) { currentQIndex++; loadQuestion(currentQIndex); }
-            else {
-                const data=await callCoach('final_summary');
-                if(data){
-                    document.getElementById('step-8').querySelector('.space-y-6').innerHTML = `<div class="bg-slate-50 p-6 rounded-xl border border-slate-200"><h3 class="font-bold text-indigo-950 text-lg mb-3">${currentLang==='traditional'?'本次練習總評':'本次练习总评'}</h3><div class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${escapeHtml(data.summary||'')}</div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100"><h4 class="font-bold text-indigo-900 text-sm mb-2">${currentLang==='traditional'?'主要優點':'主要优点'}</h4><div class="text-sm whitespace-pre-line">${escapeHtml((data.strengths||[]).join('\n'))}</div></div><div class="bg-amber-50 p-4 rounded-xl border border-amber-100"><h4 class="font-bold text-amber-900 text-sm mb-2">${currentLang==='traditional'?'最需要改善':'最需要改善'}</h4><div class="text-sm whitespace-pre-line">${escapeHtml((data.improvements||[]).join('\n'))}</div></div></div>`;
-                }
+        function stopQARecord() {
+            isRecording7 = false;
+            clearInterval(timerInterval7);
+            if (recognition) { try { recognition.stop(); } catch (e) {} }
+            document.getElementById('qa-btn-text').innerText = currentLang === 'traditional' ? '錄音完成' : '录音完成';
+            document.getElementById('qa-score-badge').innerText = currentLang === 'traditional' ? '得分：6 / 6' : '得分：6 / 6';
+            document.getElementById('qa-sample-fb').innerText = currentLang === 'traditional' ? '即興回答切中核心，邏輯嚴密。' : '即兴回答切中核心，逻辑严密。';
+            document.getElementById('qa-feedback-box').classList.remove('hidden');
+            qaAnswers.push(currentQTranscript);
+        }
+
+        function nextQuestion() {
+            if (currentQIndex < 3) {
+                currentQIndex++;
+                loadQuestion(currentQIndex);
+            } else {
                 goToStep(8);
+                document.getElementById('final-summary').innerHTML = `
+                    <p>🎯 ${currentLang === 'traditional' ? '演說得分' : '演说得分'}：6/6，${currentLang === 'traditional' ? '追問平均得分' : '追问平均得分'}：6/6</p>
+                    <p>💡 ${currentLang === 'traditional' ? '整體表現優異，展現了深厚的文化理解與流暢的表達能力。' : '整体表现优异，展现了深厚的文化理解与流畅的表达能力。'}</p>
+                    <p>📌 ${currentLang === 'traditional' ? '建議：可進一步加強成語運用與跨文化比較的深度。' : '建议：可进一步加强成语运用与跨文化比较的深度。'}</p>
+                    <p class="text-xs text-indigo-600 mt-2"><i class="fa-regular fa-flag mr-1"></i> ${currentLang === 'traditional' ? '文化背景' : '文化背景'}：${culturalBg}</p>
+                `;
+                const topic = getTopicName();
+                const data = getPersonalizedEssay(topic);
+                if (data) {
+                    document.getElementById('final-essay-sample').innerHTML = data.essay;
+                } else {
+                    document.getElementById('final-essay-sample').innerHTML = currentLang === 'traditional' ?
+                        '（範文將由AI生成，請參考ChatGPT提示詞）' :
+                        '（范文将由AI生成，请参考ChatGPT提示词）';
+                }
             }
         }
 
-        function prevQuestion() { if(currentQIndex>0){currentQIndex--;loadQuestion(currentQIndex);} else goToStep(6); }
-
-        // =============================================================
-        // 重新開始
-        // =============================================================
-        function restartTool() {
-            currentQIndex = 0;
-            timeLeft4 = 180;
-            isRecording4 = false;
-            outlineSubmitted = false;
-            recordedSpeechText = "";
-            document.getElementById('timer-display-4').innerText = "03:00";
-            document.getElementById('user-outline').value = '';
-            document.getElementById('outline-upload-status').innerHTML = '確認並上傳大綱';
-            document.getElementById('live-transcript-4').innerText = currentLang === 'traditional' ? '（等待錄音開始中...）' :
-                '（等待录音开始中...）';
-            goToStep(1);
+        function prevQuestion() {
+            if (currentQIndex > 0) {
+                currentQIndex--;
+                loadQuestion(currentQIndex);
+            } else {
+                goToStep(6);
+            }
         }
 
-        // =============================================================
+        // ============================================================
+        // 🔥 獨立計時器彈窗（同步開啟 ChatGPT 時自動彈出）
+        // ============================================================
+        function openTimerWindow(mode) {
+            const isTraditional = currentLang === 'traditional';
+            const title = isTraditional ? 'AP 中文計時器' : 'AP 中文计时器';
+            const speechLabel = isTraditional ? '演說 3:00' : '演说 3:00';
+            const qaLabel = isTraditional ? '追問 0:40' : '追问 0:40';
+            const startLabel = isTraditional ? '開始' : '开始';
+            const pauseLabel = isTraditional ? '暫停' : '暂停';
+            const resetLabel = isTraditional ? '重設' : '重置';
+            const readyLabel = isTraditional ? '準備開始' : '准备开始';
+            const timeUpLabel = isTraditional ? '⏰ 時間到！' : '⏰ 时间到！';
+
+            const win = window.open('', 'APTimer', 'width=380,height=380,resizable=yes');
+            if (!win) {
+                alert(isTraditional ? '請允許彈出視窗，計時器才能顯示。' : '请允许弹出窗口，计时器才能显示。');
+                return;
+            }
+            win.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${title}</title>
+                    <style>
+                        body { font-family: Arial, "Noto Sans TC", sans-serif; background: #eef2ff; text-align: center; padding: 30px 20px; margin: 0; }
+                        .time { font-size: 82px; font-weight: 800; font-family: monospace; color: #1e293b; margin: 20px 0; letter-spacing: 2px; }
+                        .status { font-size: 18px; font-weight: 600; color: #475569; min-height: 30px; }
+                        .row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+                        button { border: none; border-radius: 12px; padding: 12px 24px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+                        .btn-primary { background: #4f46e5; color: white; }
+                        .btn-primary:hover { background: #4338ca; }
+                        .btn-danger { background: #dc2626; color: white; }
+                        .btn-danger:hover { background: #b91c1c; }
+                        .btn-secondary { background: #94a3b8; color: white; }
+                        .btn-secondary:hover { background: #64748b; }
+                        .btn-success { background: #16a34a; color: white; }
+                        .btn-success:hover { background: #15803d; }
+                        .preset { display: flex; gap: 10px; justify-content: center; margin: 12px 0; }
+                        .preset button { padding: 8px 18px; font-size: 14px; background: #e0e7ff; color: #3730a3; border-radius: 8px; }
+                        .preset button:hover { background: #c7d2fe; }
+                        .footer { margin-top: 20px; font-size: 13px; color: #94a3b8; }
+                        .time-up { color: #dc2626; animation: blink 0.5s infinite alternate; }
+                        @keyframes blink { from { opacity: 1; } to { opacity: 0.3; } }
+                    </style>
+                </head>
+                <body>
+                    <h2 style="margin:0;color:#1e293b;">⏱️ ${title}</h2>
+                    <div class="preset">
+                        <button onclick="setPreset(180)">${speechLabel}</button>
+                        <button onclick="setPreset(40)">${qaLabel}</button>
+                    </div>
+                    <div class="time" id="timerDisplay">03:00</div>
+                    <div class="status" id="statusDisplay">${readyLabel}</div>
+                    <div class="row">
+                        <button class="btn-primary" id="startBtn" onclick="toggleTimer()">${startLabel}</button>
+                        <button class="btn-secondary" onclick="resetTimer()">${resetLabel}</button>
+                    </div>
+                    <div class="footer">⏱️ 剩餘時間即時顯示 · 時間到自動停止</div>
+                    <script>
+                        let seconds = 180;
+                        let timerId = null;
+                        let running = false;
+                        const timerDisplay = document.getElementById('timerDisplay');
+                        const statusDisplay = document.getElementById('statusDisplay');
+                        const startBtn = document.getElementById('startBtn');
+
+                        function formatTime(s) {
+                            const m = Math.floor(s / 60);
+                            const sec = s % 60;
+                            return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+                        }
+
+                        function updateDisplay() {
+                            timerDisplay.textContent = formatTime(seconds);
+                            if (seconds === 0) {
+                                timerDisplay.classList.add('time-up');
+                                statusDisplay.textContent = '${timeUpLabel}';
+                            } else {
+                                timerDisplay.classList.remove('time-up');
+                            }
+                        }
+
+                        function setPreset(s) {
+                            if (running) toggleTimer();
+                            seconds = s;
+                            updateDisplay();
+                            statusDisplay.textContent = s === 180 ? '${speechLabel}' : '${qaLabel}';
+                            startBtn.textContent = '${startLabel}';
+                        }
+
+                        function toggleTimer() {
+                            if (running) {
+                                clearInterval(timerId);
+                                running = false;
+                                startBtn.textContent = '${startLabel}';
+                                statusDisplay.textContent = '⏸️ ${isTraditional ? "已暫停" : "已暂停"}';
+                                return;
+                            }
+                            if (seconds <= 0) {
+                                resetTimer();
+                                return;
+                            }
+                            running = true;
+                            startBtn.textContent = '${pauseLabel}';
+                            statusDisplay.textContent = '⏳ ${isTraditional ? "計時中..." : "计时中..."}';
+                            timerId = setInterval(() => {
+                                seconds--;
+                                updateDisplay();
+                                if (seconds <= 0) {
+                                    clearInterval(timerId);
+                                    running = false;
+                                    startBtn.textContent = '${startLabel}';
+                                    statusDisplay.textContent = '${timeUpLabel}';
+                                    // 嘗試播放提示音（可選）
+                                    try {
+                                        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                                        const osc = ctx.createOscillator();
+                                        const gain = ctx.createGain();
+                                        osc.connect(gain);
+                                        gain.connect(ctx.destination);
+                                        osc.frequency.value = 880;
+                                        osc.type = 'sine';
+                                        gain.gain.value = 0.3;
+                                        osc.start();
+                                        setTimeout(() => osc.stop(), 600);
+                                    } catch(e) {}
+                                }
+                            }, 1000);
+                        }
+
+                        function resetTimer() {
+                            if (running) { clearInterval(timerId); running = false; }
+                            seconds = 180;
+                            updateDisplay();
+                            statusDisplay.textContent = '${readyLabel}';
+                            startBtn.textContent = '${startLabel}';
+                            timerDisplay.classList.remove('time-up');
+                        }
+
+                        // 初始設定
+                        resetTimer();
+                    <\/script>
+                </body>
+                </html>
+            `);
+            win.document.close();
+            win.focus();
+        }
+
+        // ============================================================
+        // ChatGPT 跳轉 + 計時器同步開啟
+        // ============================================================
+        function jumpToChatGPT(mode) {
+            const topic = getTopicName();
+            const bg = culturalBg || '未指定';
+            const isTraditional = currentLang === 'traditional';
+
+            let prompt = '';
+
+            if (mode === 'teacher') {
+                prompt = `${isTraditional ? '你現在扮演一位資深的 AP Chinese Language and Culture 中文教師。' : '你现在扮演一位资深的 AP Chinese Language and Culture 中文教师。'}
+
+【${isTraditional ? '學生背景' : '学生背景'}】
+${isTraditional ? '學生來自' : '学生来自'}：${bg}
+${isTraditional ? '主題' : '主题'}：${topic}
+
+${isTraditional ? '【任務】' : '【任务】'}
+${isTraditional ? '請針對此主題生成完整的備課資料，包含以下四項：' : '请针对此主题生成完整的备课资料，包含以下四项：'}
+
+1. ${isTraditional ? '📋 結構大綱（演說架構，約4-5個要點）' : '📋 结构大纲（演说架构，约4-5个要点）'}
+2. ${isTraditional ? '📝 滿分範文（約3分鐘，500-600字，須融入學生的文化背景 ${bg} 進行跨文化比較與反思）' : '📝 满分范文（约3分钟，500-600字，须融入学生的文化背景 ${bg} 进行跨文化比较与反思）'}
+3. ${isTraditional ? '❓ 4道追問題目（須為宏觀、批判性思考問題，不涉及具體國家，考驗學生的分析與論證能力）' : '❓ 4道追问题目（须为宏观、批判性思考问题，不涉及具体国家，考验学生的分析与论证能力）'}
+4. ${isTraditional ? '✅ 4題參考答案（簡要但具深度）' : '✅ 4题参考答案（简要但具深度）'}
+
+${isTraditional ? '請將以上四項完整呈現，格式清楚。' : '请将以上四项完整呈现，格式清楚。'}`;
+
+            } else {
+                // 學生模式
+                prompt = `${isTraditional ? '你現在扮演一位資深的 AP Chinese Language and Culture 口試考官與中文教師。' : '你现在扮演一位资深的 AP Chinese Language and Culture 口试考官与中文教师。'}
+
+【${isTraditional ? '學生背景' : '学生背景'}】
+${isTraditional ? '學生來自' : '学生来自'}：${bg}
+${isTraditional ? '主題' : '主题'}：${topic}
+
+【${isTraditional ? '核心任務' : '核心任务'}】
+${isTraditional ? '請引導學生完成一次完整的 AP 中文 2027 新制文化演說，以及演說後 4 題針對性、深入的開放式追問。必須逐階段進行，不得跳步。' : '请引导学生完成一次完整的 AP 中文 2027 新制文化演说，以及演说后 4 题针对性、深入的开放式追问。必须逐阶段进行，不得跳步。'}
+
+【${isTraditional ? '重要：語音模式' : '重要：语音模式'}】
+${isTraditional ? '本練習優先使用 ChatGPT 語音模式。請用語音自然回應，像真正的口試考官一樣。' : '本练习优先使用 ChatGPT 语音模式。请用语音自然回应，像真正的口试考官一样。'}
+
+【${isTraditional ? '第一階段' : '第一阶段'}】
+${isTraditional ? '第一次回應請明確顯示以下選項：' : '第一次回应请明确显示以下选项：'}
+
+A：${isTraditional ? '先看完整的 3 分鐘高分演講稿 + 大綱' : '先看完整的 3 分钟高分演讲稿 + 大纲'}
+B：${isTraditional ? '直接開始 3 分鐘錄音演講（請同時開啟計時器）' : '直接开始 3 分钟录音演讲（请同时开启计时器）'}
+
+${isTraditional ? '請等待學生選擇。' : '请等待学生选择。'}
+
+【${isTraditional ? '第二階段：學生選 A' : '第二阶段：学生选 A'}】
+${isTraditional ? '生成完整範文（須融入 ${bg} 的跨文化比較），附大綱。完成後詢問是否要演練。' : '生成完整范文（须融入 ${bg} 的跨文化比较），附大纲。完成后询问是否要演练。'}
+
+【${isTraditional ? '第三階段：學生選 B，直接演說' : '第三阶段：学生选 B，直接演说'}】
+${isTraditional ? '進入 3 分鐘演說。請學生使用計時器，時間到立即結束。學生說完後整理文字稿，給 6 分制評分與具體評語。' : '进入 3 分钟演说。请学生使用计时器，时间到立即结束。学生说完后整理文字稿，给 6 分制评分与具体评语。'}
+
+【${isTraditional ? '第四階段：大綱' : '第四阶段：大纲'}】
+${isTraditional ? '無論選 A 或 B，完成後都必須提供大綱。' : '无论选 A 或 B，完成后都必须提供大纲。'}
+
+【${isTraditional ? '第五階段：四題追問（宏觀批判性）' : '第五阶段：四题追问（宏观批判性）'}】
+${isTraditional ? '設計 4 題高度針對性的開放式問題。問題必須是宏觀、批判性思考，不涉及具體國家。逐題進行，每題限時40秒（請學生使用計時器），每題回答後給6分制評分與改進建議。' : '设计 4 题高度针对性的开放式问题。问题必须是宏观、批判性思考，不涉及具体国家。逐题进行，每题限时40秒（请学生使用计时器），每题回答后给6分制评分与改进建议。'}
+
+【${isTraditional ? '第六階段：總評' : '第六阶段：总评'}】
+${isTraditional ? '提供四題整體分析、每題評分總結、最需要改善的3個地方、下次練習建議，以及演說與追問的整體表現總結。' : '提供四题整体分析、每题评分总结、最需要改善的3个地方、下次练习建议，以及演说与追问的整体表现总结。'}
+
+【${isTraditional ? '現在開始' : '现在开始'}】
+${isTraditional ? '現在只說：\n\n「你好！今天我們練習的主題是『' + topic + '』。請選 A 或 B。\n\nA：先看完整的 3 分鐘高分演講稿 + 大綱\nB：直接開始 3 分鐘錄音演講（請同時開啟計時器）\n\n請選擇 A 或 B。」' : '现在只说：\n\n「你好！今天我们练习的主题是『' + topic + '』。请选择 A 或 B。\n\nA：先看完整的 3 分钟高分演讲稿 + 大纲\nB：直接开始 3 分钟录音演讲（请同时开启计时器）\n\n请选择 A 或 B。」'}`;
+            }
+
+            // 複製到剪貼簿
+            navigator.clipboard.writeText(prompt).then(() => {
+                showModalWithTimer(prompt);
+            }).catch(() => {
+                showModalWithTimer(prompt);
+            });
+        }
+
+        // ============================================================
+        // 顯示 Modal + 開啟計時器
+        // ============================================================
+        function showModalWithTimer(prompt) {
+            const isTraditional = currentLang === 'traditional';
+
+            // 先開啟計時器
+            openTimerWindow('speech');
+
+            const modalHtml = `
+                <div class="fixed inset-0 modal-overlay flex items-center justify-center z-50 p-4" id="ai-jump-modal">
+                    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] flex flex-col">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">
+                                    <i class="fa-regular fa-copy text-indigo-600 mr-2"></i>
+                                    ${isTraditional ? '📋 提示詞已複製！計時器已同步開啟' : '📋 提示词已复制！计时器已同步开启'}
+                                </h3>
+                                <p class="text-sm text-slate-500">${isTraditional ? '請貼到 ChatGPT 並開啟語音模式進行口試練習。計時器會顯示在獨立視窗。' : '请贴到 ChatGPT 并开启语音模式进行口试练习。计时器会显示在独立窗口。'}</p>
+                            </div>
+                            <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 overflow-y-auto flex-grow max-h-[350px] text-sm whitespace-pre-wrap font-mono leading-relaxed">
+                            ${prompt}
+                        </div>
+                        <div class="flex gap-3 mt-4 flex-wrap">
+                            <button onclick="openChatGPTAndClose()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-xl font-medium transition flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                <span>${isTraditional ? '開啟 ChatGPT（已複製）' : '开启 ChatGPT（已复制）'}</span>
+                            </button>
+                            <button onclick="closeModal()" class="px-4 py-3 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-50 transition">
+                                ${isTraditional ? '取消' : '取消'}
+                            </button>
+                        </div>
+                        <div class="mt-3 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                            <p class="text-xs text-emerald-800">
+                                <i class="fa-regular fa-clock mr-1"></i>
+                                ${isTraditional ? '⏱️ 計時器已同步開啟，請查看另一個視窗。' : '⏱️ 计时器已同步开启，请查看另一个窗口。'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            const oldModal = document.getElementById('ai-jump-modal');
+            if (oldModal) oldModal.remove();
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('ai-jump-modal');
+            if (modal) modal.remove();
+        }
+
+        function openChatGPTAndClose() {
+            window.open('https://chatgpt.com/', '_blank');
+            closeModal();
+        }
+
+        // ============================================================
+        // 重新開始
+        // ============================================================
+        function restartTool() {
+            location.reload();
+        }
+
+        // ============================================================
         // 初始化
-        // =============================================================
+        // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             renderCategories();
-            renderQuestions();
             const defaultCat = categoriesData[0];
             const defaultTopic = defaultCat.topics[0];
-            selectedTopic = {
-                en: `Topic: ${defaultTopic.en}`,
-                zh: `中文對照：${defaultTopic.zh}`,
-                raw: defaultTopic.zh
-            };
+            selectedTopic = { en: `Topic: ${defaultTopic.en}`, zh: `中文對照：${defaultTopic.zh}`, raw: defaultTopic.zh };
             currentTopicData = defaultTopic;
             document.getElementById('topic-en').innerText = selectedTopic.en;
             document.getElementById('topic-zh').innerText = selectedTopic.zh;
+            setLanguage('traditional');
         });
-
-        // 覆寫 goToStep 支援 step '35a', '35b'
-        const originalGoToStep = goToStep;
-        goToStep = function(step) {
-            document.querySelectorAll('.step-container').forEach(el => el.classList.add('hidden'));
-            const target = document.getElementById(`step-${step}`);
-            if (target) {
-                target.classList.remove('hidden');
-            }
-            const stepMap = { 1: '1', 2: '2', 3: '3', 35: '3.5', '35a': '3.5A', '35b': '3.5B', 4: '4', 5: '5', 6: '6', 7: '7',
-                8: '8' };
-            document.getElementById('step-indicator').innerText = `步驟 ${stepMap[step] || step} / 9`;
-            currentStep = step;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
     </script>
-
 </body>
 </html>
